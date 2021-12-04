@@ -95,9 +95,9 @@ func Start() {
 	LoadParamConfig()                 // 如果环境变量存在，从环境变量读取gmc config，并覆盖
 	WriteGmcConfigFile(gmcConfigPath) // 内存中的gmc config写到文件
 	log.Infof("gmc config: %+v", util.MustMarshal(config.Conf))
-
-	CreateBotIfParamExist() // 如果环境变量存在，使用环境变量创建机器人 UIN PASSWORD
-	InitGin()               // 初始化GIN HTTP管理
+	handler.AutoLogin()
+	//CreateBotIfParamExist() // 如果环境变量存在，使用环境变量创建机器人 UIN PASSWORD
+	InitGin() // 初始化GIN HTTP管理
 }
 
 func LoadGmcConfigFile(filePath string) {

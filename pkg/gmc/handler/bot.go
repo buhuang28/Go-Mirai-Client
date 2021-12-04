@@ -215,6 +215,8 @@ func QueryQRCodeStatus(c *gin.Context) {
 			if ok {
 				originCli.Release()
 			}
+			var qqInfo QQInfo
+			qqInfo.StoreLoginInfo(qrCodeBot.Uin, [16]byte{}, qrCodeBot.GenToken())
 			bot.Clients.Store(qrCodeBot.Uin, qrCodeBot)
 			go AfterLogin(qrCodeBot)
 			qrCodeBot = nil
@@ -251,7 +253,7 @@ func CreateBotImpl(uin int64, password string, deviceRandSeed int64) {
 	CreateBotImplMd5(uin, md5.Sum([]byte(password)), deviceRandSeed)
 }
 
-func CreateBotImplMd5(uin int64, passwordMd5 [16]byte, deviceRandSeed int64) {
+func CreateBotImplMd5(uin int64, passwordMd5 [16]byte, deviceRandSeed int64) bool {
 	log.Infof("开始初始化设备信息")
 	deviceInfo := device.GetDevice(uin)
 	if deviceRandSeed != 0 {
@@ -273,13 +275,17 @@ func CreateBotImplMd5(uin int64, passwordMd5 [16]byte, deviceRandSeed int64) {
 	if err != nil {
 		// TODO 登录失败，是否需要删除？
 		log.Errorf("failed to login, err: %+v", err)
-		return
+		return false
 	}
 	if ok {
 		log.Infof("登录成功")
+		var qqInfo QQInfo
+		qqInfo.StoreLoginInfo(uin, passwordMd5, cli.GenToken())
 		AfterLogin(cli)
+		return true
 	} else {
 		log.Infof("登录失败")
+		return false
 	}
 }
 

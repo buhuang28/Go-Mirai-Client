@@ -44,4 +44,4 @@ require (
 	golang.org/x/text v0.3.6 // indirect
 )
 
-replace github.com/Mrs4s/MiraiGo v0.0.0-20211011130217-a3eacd706b29 => github.com/buhuang28/MiraiGo v0.0.0-20211205041544-c70232e4ff57
+replace github.com/Mrs4s/MiraiGo v0.0.0-20211011130217-a3eacd706b29  => github.com/buhuang28/MiraiGo v0.0.0-20211205041544-c70232e4ff57

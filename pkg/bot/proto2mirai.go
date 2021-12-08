@@ -70,7 +70,7 @@ func ProtoMsgToMiraiMsg(cli *client.QQClient, msgList []*onebot.Message, notConv
 		case "video":
 			messageChain = append(messageChain, ProtoVideoToMiraiVideo(cli, protoMsg.Data))
 		case "gift":
-			messageChain = append(messageChain, ProtoGiftToMiraiGift(cli, protoMsg.Data))
+			//messageChain = append(messageChain, ProtoGiftToMiraiGift(cli, protoMsg.Data))
 		default:
 			log.Errorf("不支持的消息类型 %+v", protoMsg)
 		}
@@ -413,41 +413,42 @@ func ProtoVideoToMiraiVideo(cli *client.QQClient, data map[string]string) (m mes
 	return elem
 }
 
-func ProtoGiftToMiraiGift(cli *client.QQClient, data map[string]string) message.IMessageElement {
-	qq, err := strconv.ParseInt(data["qq"], 10, 64)
-	if err != nil {
-		log.Warnf("failed to get gift target, %s", data["qq"])
-		return EmptyText()
-	}
-	giftId, err := strconv.Atoi(data["id"])
-	if err != nil {
-		log.Warnf("failed to get gift id, %s", data["qq"])
-		return EmptyText()
-	}
-	freeGifts := []message.GroupGift{ // 免费礼物
-		message.SweetWink,
-		message.HappyCola,
-		message.LuckyBracelet,
-		message.Cappuccino,
-		message.CatWatch,
-		message.FleeceGloves,
-		message.RainbowCandy,
-		message.Stronger,
-		message.LoveMicrophone,
-		message.HoldingYourHand,
-		message.CuteCat,
-		message.MysteryMask,
-		message.ImBusy,
-		message.LoveMask,
-	}
-	for _, freeGift := range freeGifts {
-		if int(freeGift) == giftId {
-			return &clz.GiftElement{
-				Target: qq,
-				GiftId: freeGift,
-			}
-		}
-	}
-	log.Warnf("unsupported gift: %+v, free gift list: %+v", giftId, util.MustMarshal(freeGifts))
-	return EmptyText()
-}
+//
+//func ProtoGiftToMiraiGift(cli *client.QQClient, data map[string]string) message.IMessageElement {
+//	qq, err := strconv.ParseInt(data["qq"], 10, 64)
+//	if err != nil {
+//		log.Warnf("failed to get gift target, %s", data["qq"])
+//		return EmptyText()
+//	}
+//	giftId, err := strconv.Atoi(data["id"])
+//	if err != nil {
+//		log.Warnf("failed to get gift id, %s", data["qq"])
+//		return EmptyText()
+//	}
+//	freeGifts := []message.GroupGift{ // 免费礼物
+//		message.SweetWink,
+//		message.HappyCola,
+//		message.LuckyBracelet,
+//		message.Cappuccino,
+//		message.CatWatch,
+//		message.FleeceGloves,
+//		message.RainbowCandy,
+//		message.Stronger,
+//		message.LoveMicrophone,
+//		message.HoldingYourHand,
+//		message.CuteCat,
+//		message.MysteryMask,
+//		message.ImBusy,
+//		message.LoveMask,
+//	}
+//	for _, freeGift := range freeGifts {
+//		if int(freeGift) == giftId {
+//			return &clz.GiftElement{
+//				Target: qq,
+//				GiftId: freeGift,
+//			}
+//		}
+//	}
+//	log.Warnf("unsupported gift: %+v, free gift list: %+v", giftId, util.MustMarshal(freeGifts))
+//	return EmptyText()
+//}

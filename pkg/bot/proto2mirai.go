@@ -89,6 +89,7 @@ func ProtoTextToMiraiText(data map[string]string) message.IMessageElement {
 
 func ProtoImageToMiraiImage(data map[string]string) message.IMessageElement {
 	elem := &clz.LocalImageElement{}
+
 	url, ok := data["url"]
 	if !ok {
 		url, ok = data["src"] // TODO 为了兼容我的旧代码偷偷加的
@@ -126,7 +127,6 @@ func ProtoImageToMiraiImage(data map[string]string) message.IMessageElement {
 		}
 		elem.EffectId = int32(effectId)
 	}
-
 	return elem
 }
 

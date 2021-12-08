@@ -1,9 +1,12 @@
 package plugin
 
 import (
+	"encoding/json"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
+	"github.com/ProtobufBot/Go-Mirai-Client/pkg/bot"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/util"
+	"github.com/gorilla/websocket"
 )
 
 type (
@@ -47,23 +50,24 @@ var OfflineFilePluginList = make([]OfflineFilePlugin, 0)
 var GroupMutePluginList = make([]GroupMutePlugin, 0)
 var MemberPermissionChangedPluginList = make([]MemberPermissionChangedPlugin, 0)
 
+//注册事件
 func Serve(cli *client.QQClient) {
 	cli.OnPrivateMessage(handlePrivateMessage)
 	cli.OnGroupMessage(handleGroupMessage)
 	cli.OnTempMessage(handleTempMessage)
-	cli.OnGroupMemberJoined(handleMemberJoinGroup)
-	cli.OnGroupMemberLeaved(handleMemberLeaveGroup)
-	cli.OnJoinGroup(handleJoinGroup)
-	cli.OnLeaveGroup(handleLeaveGroup)
-	cli.OnNewFriendRequest(handleNewFriendRequest)
-	cli.OnUserWantJoinGroup(handleUserJoinGroupRequest)
-	cli.OnGroupInvited(handleGroupInvitedRequest)
-	cli.OnGroupMessageRecalled(handleGroupMessageRecalled)
-	cli.OnFriendMessageRecalled(handleFriendMessageRecalled)
-	cli.OnNewFriendAdded(handleNewFriendAdded)
-	cli.OnReceivedOfflineFile(handleOfflineFile)
-	cli.OnGroupMuted(handleGroupMute)
-	cli.OnGroupMemberPermissionChanged(handleMemberPermissionChanged)
+	//cli.OnGroupMemberJoined(handleMemberJoinGroup)
+	//cli.OnGroupMemberLeaved(handleMemberLeaveGroup)
+	//cli.OnJoinGroup(handleJoinGroup)
+	//cli.OnLeaveGroup(handleLeaveGroup)
+	//cli.OnNewFriendRequest(handleNewFriendRequest)
+	//cli.OnUserWantJoinGroup(handleUserJoinGroupRequest)
+	//cli.OnGroupInvited(handleGroupInvitedRequest)
+	//cli.OnGroupMessageRecalled(handleGroupMessageRecalled)
+	//cli.OnFriendMessageRecalled(handleFriendMessageRecalled)
+	//cli.OnNewFriendAdded(handleNewFriendAdded)
+	//cli.OnReceivedOfflineFile(handleOfflineFile)
+	//cli.OnGroupMuted(handleGroupMute)
+	//cli.OnGroupMemberPermissionChanged(handleMemberPermissionChanged)
 }
 
 // 添加私聊消息插件
@@ -147,32 +151,65 @@ func AddMemberPermissionChangedPlugin(plugin MemberPermissionChangedPlugin) {
 }
 
 func handlePrivateMessage(cli *client.QQClient, event *message.PrivateMessage) {
+	//fmt.Println("接收到私聊消息:",event.ToString())
+	//fmt.Println("接收到私聊消息:",bot.MiraiMsgToRawMsg(cli, event.Elements))
+	//util.SafeGo(func() {
+	//	if ws_client.WsCon == nil || !ws_client.ConSucess {
+	//		return
+	//	}
+	//	ws_client.WsCon.WriteMessage(websocket.TextMessage, []byte(event.ToString()))
+	//})
+	if bot.WsCon == nil || !bot.ConSucess {
+		return
+	}
 	util.SafeGo(func() {
-		for _, plugin := range PrivateMessagePluginList {
-			if result := plugin(cli, event); result == MessageBlock {
-				break
-			}
-		}
+		var data bot.GMCWSData
+		data.BotId = cli.Uin
+		data.UserId = event.Sender.Uin
+		data.MsgType = bot.GMC_PRIVATE_MESSAGE
+		data.Message = bot.MiraiMsgToRawMsg(cli, event.Elements)
+		marshal, _ := json.Marshal(data)
+		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
 	})
 }
 
 func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
+	if bot.WsCon == nil || !bot.ConSucess {
+		return
+	}
 	util.SafeGo(func() {
-		for _, plugin := range GroupMessagePluginList {
-			if result := plugin(cli, event); result == MessageBlock {
-				break
-			}
-		}
+		var data bot.GMCWSData
+		data.BotId = cli.Uin
+		data.GroupId = event.GroupCode
+		data.UserId = event.Sender.Uin
+		data.MsgType = bot.GMC_GROUP_MESSAGE
+		data.InternalId = event.InternalId
+		data.Message = bot.MiraiMsgToRawMsg(cli, event.Elements)
+		marshal, _ := json.Marshal(data)
+		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
 	})
+	//util.SafeGo(func() {
+	//	for _, plugin := range GroupMessagePluginList {
+	//		if result := plugin(cli, event); result == MessageBlock {
+	//			break
+	//		}
+	//	}
+	//})
 }
 
 func handleTempMessage(cli *client.QQClient, event *client.TempMessageEvent) {
+	if bot.WsCon == nil || !bot.ConSucess {
+		return
+	}
 	util.SafeGo(func() {
-		for _, plugin := range TempMessagePluginList {
-			if result := plugin(cli, event); result == MessageBlock {
-				break
-			}
-		}
+		var data bot.GMCWSData
+		data.BotId = cli.Uin
+		data.GroupId = event.Message.GroupCode
+		data.UserId = event.Message.Sender.Uin
+		data.MsgType = bot.GMC_TEMP_MESSAGE
+		data.Message = bot.MiraiMsgToRawMsg(cli, event.Message.Elements)
+		marshal, _ := json.Marshal(data)
+		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
 	})
 }
 

@@ -2,12 +2,10 @@ package bot
 
 import (
 	"fmt"
-	"html"
-
-	"github.com/ProtobufBot/Go-Mirai-Client/pkg/clz"
-
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
+	"github.com/ProtobufBot/Go-Mirai-Client/pkg/clz"
+	"html"
 )
 
 func MiraiMsgToRawMsg(cli *client.QQClient, messageChain []message.IMessageElement) string {
@@ -40,6 +38,5 @@ func MiraiMsgToRawMsg(cli *client.QQClient, messageChain []message.IMessageEleme
 			result += fmt.Sprintf(`<video url="%s" cover="%s"/>`, html.EscapeString(elem.Url), html.EscapeString(elem.CoverUrl))
 		}
 	}
-
 	return result
 }

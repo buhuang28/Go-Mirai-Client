@@ -29,7 +29,9 @@ func RawMsgToMiraiMsg(cli *client.QQClient, str string) []message.IMessageElemen
 			text := textList[0]
 			textList = textList[1:]
 			str = str[len(text):]
-			elemList = append(elemList, message.NewText(text))
+			if text != "" {
+				elemList = append(elemList, message.NewText(text))
+			}
 		}
 		if len(codeList) > 0 && strings.HasPrefix(str, codeList[0]) {
 			code := codeList[0]
@@ -49,10 +51,10 @@ func RawMsgToMiraiMsg(cli *client.QQClient, str string) []message.IMessageElemen
 				elemList = append(elemList, ProtoAtToMiraiAt(attrMap))
 			case "poke":
 				elemList = append(elemList, ProtoPokeToMiraiPoke(attrMap))
-			case "img":
+			case "img", "image":
 				elemList = append(elemList, ProtoImageToMiraiImage(attrMap)) // TODO 为了兼容我的旧代码偷偷加的
-			case "image":
-				elemList = append(elemList, ProtoImageToMiraiImage(attrMap))
+			//case "image":
+			//	elemList = append(elemList, ProtoImageToMiraiImage(attrMap))
 			case "face":
 				elemList = append(elemList, ProtoFaceToMiraiFace(attrMap))
 			case "share":

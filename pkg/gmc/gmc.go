@@ -3,6 +3,7 @@ package gmc
 import (
 	"flag"
 	"fmt"
+	"github.com/ProtobufBot/Go-Mirai-Client/pkg/bot"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -96,6 +97,9 @@ func Start() {
 	WriteGmcConfigFile(gmcConfigPath) // 内存中的gmc config写到文件
 	log.Infof("gmc config: %+v", util.MustMarshal(config.Conf))
 	handler.AutoLogin()
+	go func() {
+		bot.WSDailCall()
+	}()
 	//CreateBotIfParamExist() // 如果环境变量存在，使用环境变量创建机器人 UIN PASSWORD
 	InitGin() // 初始化GIN HTTP管理
 }

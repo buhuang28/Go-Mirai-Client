@@ -8,7 +8,7 @@ import (
 func TestSplit(t *testing.T) {
 	text := ""
 	LIMIT := 3
-	num := int(math.Ceil(float64(len(text))/float64(LIMIT)))
+	num := int(math.Ceil(float64(len(text)) / float64(LIMIT)))
 	for i := 0; i < num; i++ {
 		start := i * LIMIT
 		end := func() int {

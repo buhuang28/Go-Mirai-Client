@@ -45,7 +45,11 @@ func GetBytes(url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if resp != nil && resp.Body != nil {
+			resp.Body.Close()
+		}
+	}()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err

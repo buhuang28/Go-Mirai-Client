@@ -25,6 +25,7 @@ import (
 var queryQRCodeMutex = &sync.RWMutex{}
 var qrCodeBot *client.QQClient
 
+//注册事件
 func init() {
 	//log.Infof("加载日志插件 Log")
 	plugin.AddPrivateMessagePlugin(plugins.LogPrivateMessage)
@@ -290,6 +291,7 @@ func CreateBotImplMd5(uin int64, passwordMd5 [16]byte, deviceRandSeed int64) boo
 }
 
 func AfterLogin(cli *client.QQClient) {
+
 	for {
 		time.Sleep(5 * time.Second)
 		if cli.Online {
@@ -312,7 +314,19 @@ func AfterLogin(cli *client.QQClient) {
 	}
 	log.Infof("共加载 %v 个群.", len(cli.GroupList))
 
-	bot.ConnectUniversal(cli)
-
+	//bot.ConnectUniversal(cli)
+	bot.BotClientLock.Lock()
+	bot.BotClientMap[cli.Uin] = cli
+	bot.BotClientLock.Unlock()
 	bot.SetRelogin(cli, 30, 20)
+
+	//go func() {
+	//	var qqInfo QQInfo
+	//	fileByte := ReadFileByte(QQINFOPATH + strconv.FormatInt(cli.Uin,10)+QQINFOSKIN)
+	//	json.Unmarshal(fileByte,&qqInfo)
+	//	getToken := cli.GenToken()
+	//	fmt.Println("获取token成功")
+	//	qqInfo.StoreLoginInfo(cli.Uin, qqInfo.PassWord,getToken)
+	//}()
+
 }

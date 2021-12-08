@@ -273,7 +273,6 @@ func HandleGetMsg(cli *client.QQClient, req *onebot.GetMsgReq) *onebot.GetMsgRes
 				Nickname: event.Sender.Nickname,
 			},
 		}
-
 	}
 	eventInterface, isPrivate := cache.PrivateMessageLru.Get(req.MessageId)
 	if isPrivate {

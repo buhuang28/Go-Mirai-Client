@@ -1,9 +1,11 @@
 package bot
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
+	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 	"sync"
 )
@@ -77,5 +79,25 @@ func BuBuhuangWithDrawMsg(cli *client.QQClient, groupId, msgId int64, internalId
 	recordList := GroupMsgRecordMap[msgId]
 	for _, v := range recordList {
 		_ = cli.RecallGroupMessage(v.GroupCode, v.EventId, v.InternalId)
+	}
+}
+
+func BuhuangBotOnline(botId int64) {
+	if WsCon != nil {
+		var data GMCWSData
+		data.BotId = botId
+		data.MsgType = GMC_ONLINE
+		marshal, _ := json.Marshal(data)
+		WsCon.WriteMessage(websocket.TextMessage, marshal)
+	}
+}
+
+func BuhuangBotOffline(botId int64) {
+	if WsCon != nil {
+		var data GMCWSData
+		data.BotId = botId
+		data.MsgType = GMC_OFFLINE
+		marshal, _ := json.Marshal(data)
+		WsCon.WriteMessage(websocket.TextMessage, marshal)
 	}
 }

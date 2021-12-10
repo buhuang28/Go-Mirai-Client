@@ -319,7 +319,7 @@ func AfterLogin(cli *client.QQClient) {
 	bot.BotClientMap[cli.Uin] = cli
 	bot.BotClientLock.Unlock()
 	bot.SetRelogin(cli, 30, 20)
-
+	bot.BuhuangBotOnline(cli.Uin)
 	//go func() {
 	//	var qqInfo QQInfo
 	//	fileByte := ReadFileByte(QQINFOPATH + strconv.FormatInt(cli.Uin,10)+QQINFOSKIN)

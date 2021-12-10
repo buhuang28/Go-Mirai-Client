@@ -15,4 +15,6 @@ const (
 	GMC_GROUP_MESSAGE    = 2
 	GMC_TEMP_MESSAGE     = 3
 	GMC_WITHDRAW_MESSAGE = 4
+	GMC_ONLINE           = 5
+	GMC_OFFLINE          = 6
 )

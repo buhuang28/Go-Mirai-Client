@@ -104,6 +104,7 @@ func SetRelogin(cli *client.QQClient, retryInterval int, retryCount int) {
 
 // ReleaseClient 断开连接并释放资源
 func ReleaseClient(cli *client.QQClient) {
+	BuhuangBotOffline(cli.Uin)
 	cli.Release()
 	Clients.Delete(cli.Uin) // 必须先删Clients，影响IsClientExist
 	LoginTokens.Delete(cli.Uin)

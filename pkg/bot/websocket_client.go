@@ -35,6 +35,12 @@ func WSDailCall() {
 		if err != nil || WsCon == nil {
 			fmt.Println(err)
 		} else {
+			Clients.Range(func(_ int64, cli *client.QQClient) bool {
+				if cli.Online {
+					BuhuangBotOnline(cli.Uin)
+				}
+				return true
+			})
 			ConSucess = true
 			go func() {
 				HandleWSMsg()

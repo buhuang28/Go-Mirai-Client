@@ -80,6 +80,10 @@ func HandleWSMsg() {
 			BuHuangSendGroupMsg(cli, miraiMsg, data.MessageId, data.GroupId)
 		case GMC_WITHDRAW_MESSAGE:
 			BuBuhuangWithDrawMsg(cli, data.GroupId, data.MessageId, data.InternalId)
+		case GMC_ALLGROUPMEMBER:
+			HandleGetAllMember(cli)
+		case GMC_GROUP_LIST:
+			HandleGroupList(cli)
 		}
 		//WsCon.WriteMessage(websocket.TextMessage, []byte("message"))
 	}

@@ -297,6 +297,7 @@ func HandleGetMsg(cli *client.QQClient, req *onebot.GetMsgReq) *onebot.GetMsgRes
 	return nil
 }
 
+//踢人
 func HandleSetGroupKick(cli *client.QQClient, req *onebot.SetGroupKickReq) *onebot.SetGroupKickResp {
 	if group := cli.FindGroup(req.GroupId); group != nil {
 		if member := group.FindMember(req.UserId); member != nil {
@@ -309,6 +310,7 @@ func HandleSetGroupKick(cli *client.QQClient, req *onebot.SetGroupKickReq) *oneb
 	return nil
 }
 
+//钦点群员禁言
 func HandleSetGroupBan(cli *client.QQClient, req *onebot.SetGroupBanReq) *onebot.SetGroupBanResp {
 	if group := cli.FindGroup(req.GroupId); group != nil {
 		if member := group.FindMember(req.UserId); member != nil {
@@ -321,6 +323,7 @@ func HandleSetGroupBan(cli *client.QQClient, req *onebot.SetGroupBanReq) *onebot
 	return nil
 }
 
+//整个群都钦点了
 func HandleSetGroupWholeBan(cli *client.QQClient, req *onebot.SetGroupWholeBanReq) *onebot.SetGroupWholeBanResp {
 	if group := cli.FindGroup(req.GroupId); group != nil {
 		group.MuteAll(req.Enable)
@@ -378,6 +381,7 @@ func HandleSetFriendAddRequest(cli *client.QQClient, req *onebot.SetFriendAddReq
 	return &onebot.SetFriendAddRequestResp{}
 }
 
+//出列有人申请入群的请求 和 处理机器人要邀请入群的请求
 func HandleSetGroupAddRequest(cli *client.QQClient, req *onebot.SetGroupAddRequestReq) *onebot.SetGroupAddRequestResp {
 	eventInterface, isGroupRequest := cache.GroupRequestLru.Get(req.Flag)
 	if isGroupRequest {
@@ -390,7 +394,6 @@ func HandleSetGroupAddRequest(cli *client.QQClient, req *onebot.SetGroupAddReque
 		} else {
 			event.Reject(false, req.Reason)
 		}
-
 		return &onebot.SetGroupAddRequestResp{}
 	}
 

@@ -84,6 +84,10 @@ func HandleWSMsg() {
 			HandleGetAllMember(cli)
 		case GMC_GROUP_LIST:
 			HandleGroupList(cli)
+		case GMC_KICK:
+			BuhuangKickGroupMember(cli, data.GroupId, data.UserId)
+		case GMC_BAN:
+			BuhuangBanGroupMember(cli, data.GroupId, data.UserId, data.Time)
 		}
 		//WsCon.WriteMessage(websocket.TextMessage, []byte("message"))
 	}

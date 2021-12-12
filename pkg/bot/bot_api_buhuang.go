@@ -67,7 +67,7 @@ func BuHuangSendPrivateMsg(cli *client.QQClient, miraiMsg []message.IMessageElem
 
 //撤回群消息 -- 这里的msgId，如果internalId是0,那么是自己发送群消息的ID，否则就是接收群消息的时候event的id
 func BuBuhuangWithDrawMsg(cli *client.QQClient, groupId, msgId int64, internalId int32) {
-	if msgId > 0 && internalId > 0 && groupId > 0 {
+	if msgId > 0 && internalId != 0 && groupId > 0 {
 		_ = cli.RecallGroupMessage(groupId, int32(msgId), internalId)
 	}
 
@@ -151,7 +151,7 @@ func BuhuangGetGroupList(cli *client.QQClient) []GMCGroup {
 	groupList := cli.GroupList
 	for _, v := range groupList {
 		var group GMCGroup
-		group.GroupId = v.Uin
+		group.GroupId = v.Code
 		group.GroupName = v.Name
 		groupInfoList = append(groupInfoList, group)
 	}
@@ -167,7 +167,7 @@ func BuhuangGetGroupMemberList(cli *client.QQClient, groupId int64) []GMCMember 
 		return nil
 	}
 	members, err := cli.GetGroupMembers(group)
-	if err != nil {
+	if err != nil || len(members) == 0 {
 		log.Infof("获取%d群群成员失败", groupId)
 		return nil
 	}
@@ -187,9 +187,17 @@ func BuhuangGetAllGroupListAndMemberList(cli *client.QQClient) GMCAllGroupMember
 	data := make(map[int64][]GMCMember)
 	groupList := cli.GroupList
 	for _, v := range groupList {
-		memberList := BuhuangGetGroupMemberList(cli, v.Uin)
-		if memberList != nil && len(memberList) > 0 {
-			data[v.Uin] = memberList
+		fmt.Println(v.Name)
+		var gmcMemberList []GMCMember
+		for _, v2 := range v.Members {
+			var member GMCMember
+			member.QQ = v2.Uin
+			member.Level = v2.Level
+			member.Permission = int64(v2.Permission)
+			gmcMemberList = append(gmcMemberList, member)
+		}
+		if gmcMemberList != nil && len(gmcMemberList) > 0 {
+			data[v.Code] = gmcMemberList
 		}
 	}
 	allGroupMember.Data = data

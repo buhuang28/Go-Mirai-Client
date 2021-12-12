@@ -183,18 +183,12 @@ func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
 		data.GroupId = event.GroupCode
 		data.UserId = event.Sender.Uin
 		data.MsgType = bot.GMC_GROUP_MESSAGE
+		data.MessageId = int64(event.Id)
 		data.InternalId = event.InternalId
 		data.Message = bot.MiraiMsgToRawMsg(cli, event.Elements)
 		marshal, _ := json.Marshal(data)
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
 	})
-	//util.SafeGo(func() {
-	//	for _, plugin := range GroupMessagePluginList {
-	//		if result := plugin(cli, event); result == MessageBlock {
-	//			break
-	//		}
-	//	}
-	//})
 }
 
 func handleTempMessage(cli *client.QQClient, event *client.TempMessageEvent) {

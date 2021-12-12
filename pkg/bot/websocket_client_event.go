@@ -8,21 +8,29 @@ import (
 )
 
 func HandleGetAllMember(cli *client.QQClient) {
+	var data GMCWSData
+	data.BotId = cli.Uin
+	data.MsgType = GMC_ALLGROUPMEMBER
 	list := BuhuangGetAllGroupListAndMemberList(cli)
-	marshal, err := json.Marshal(list)
+	data.AllGroupMember = list
+	marshal, err := json.Marshal(data)
 	if err != nil {
-		WsCon.WriteMessage(websocket.TextMessage, marshal)
+		log.Info(cli.Uin, "获取全部群成员列表失败:", err)
 	} else {
-		log.Info("%d获取全部群成员列表失败", cli.Uin)
+		WsCon.WriteMessage(websocket.TextMessage, marshal)
 	}
 }
 
 func HandleGroupList(cli *client.QQClient) {
-	list := BuhuangGetAllGroupListAndMemberList(cli)
-	marshal, err := json.Marshal(list)
+	var data GMCWSData
+	data.BotId = cli.Uin
+	data.MsgType = GMC_GROUP_LIST
+	list := BuhuangGetGroupList(cli)
+	data.GroupList = list
+	marshal, err := json.Marshal(data)
 	if err != nil {
-		WsCon.WriteMessage(websocket.TextMessage, marshal)
-	} else {
 		log.Info("%d获取群列表失败", cli.Uin)
+	} else {
+		WsCon.WriteMessage(websocket.TextMessage, marshal)
 	}
 }

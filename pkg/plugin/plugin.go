@@ -55,13 +55,23 @@ func Serve(cli *client.QQClient) {
 	cli.OnPrivateMessage(handlePrivateMessage)
 	cli.OnGroupMessage(handleGroupMessage)
 	cli.OnTempMessage(handleTempMessage)
-	//cli.OnGroupMemberJoined(handleMemberJoinGroup)
-	//cli.OnGroupMemberLeaved(handleMemberLeaveGroup)
+	//群成员++
+	cli.OnGroupMemberJoined(handleMemberJoinGroup)
+	//群成员--
+	cli.OnGroupMemberLeaved(handleMemberLeaveGroup)
 	//cli.OnJoinGroup(handleJoinGroup)
 	//cli.OnLeaveGroup(handleLeaveGroup)
 	//cli.OnNewFriendRequest(handleNewFriendRequest)
-	//cli.OnUserWantJoinGroup(handleUserJoinGroupRequest)
-	//cli.OnGroupInvited(handleGroupInvitedRequest)
+
+	//入群请求
+	cli.OnUserWantJoinGroup(handleUserJoinGroupRequest)
+	//机器人被邀请入群
+	cli.OnGroupInvited(handleGroupInvitedRequest)
+
+	//system,_ := cli.GetGroupFileSystem(123)
+	//system.UploadFile("filePath","name","/")
+	//url := cli.GetGroupFileUrl(groupID, fileID, busID)
+
 	//cli.OnGroupMessageRecalled(handleGroupMessageRecalled)
 	//cli.OnFriendMessageRecalled(handleFriendMessageRecalled)
 	//cli.OnNewFriendAdded(handleNewFriendAdded)

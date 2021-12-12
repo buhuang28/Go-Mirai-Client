@@ -26,7 +26,7 @@ import (
 )
 
 var (
-	sms          = false // 参数优先使用短信验证
+	sms          = true  // 参数优先使用短信验证
 	wsUrls       = ""    // websocket url
 	port         = 9000  // 端口号
 	uin    int64 = 0     // qq
@@ -99,6 +99,7 @@ func Start() {
 	go func() {
 		bot.WSDailCall()
 	}()
+	go bot.HandleWSMsg()
 	time.Sleep(time.Second * 1)
 	handler.AutoLogin()
 	//CreateBotIfParamExist() // 如果环境变量存在，使用环境变量创建机器人 UIN PASSWORD

@@ -37,14 +37,15 @@ func WSDailCall() {
 		} else {
 			Clients.Range(func(_ int64, cli *client.QQClient) bool {
 				if cli.Online {
+					fmt.Println("发送上线事件")
 					BuhuangBotOnline(cli.Uin)
 				}
 				return true
 			})
 			ConSucess = true
-			go func() {
-				HandleWSMsg()
-			}()
+			//go func() {
+			//	HandleWSMsg()
+			//}()
 			return
 		}
 		time.Sleep(time.Second * 2)
@@ -54,6 +55,10 @@ func WSDailCall() {
 //处理Websocket-Server的消息，一般负责调用API
 func HandleWSMsg() {
 	for {
+		if WsCon == nil || !ConSucess {
+			time.Sleep(time.Second)
+			continue
+		}
 		_, message, e := WsCon.ReadMessage()
 		fmt.Println("收到消息:", string(message))
 		if e != nil {
@@ -64,7 +69,7 @@ func HandleWSMsg() {
 				fmt.Println("ws-server掉线，正在重连")
 				WSDailCall()
 			}()
-			return
+			continue
 		}
 		var data GMCWSData
 		_ = json.Unmarshal(message, &data)

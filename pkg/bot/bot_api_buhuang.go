@@ -187,7 +187,6 @@ func BuhuangGetAllGroupListAndMemberList(cli *client.QQClient) GMCAllGroupMember
 	data := make(map[int64][]GMCMember)
 	groupList := cli.GroupList
 	for _, v := range groupList {
-		fmt.Println(v.Name)
 		var gmcMemberList []GMCMember
 		for _, v2 := range v.Members {
 			var member GMCMember

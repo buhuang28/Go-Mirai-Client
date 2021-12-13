@@ -17,6 +17,7 @@ type GMCWSData struct {
 	BusId          int64             `json:"bus_id,omitempty"`
 	FileId         string            `json:"file_id,omitempty"`
 	FileFromGroup  int64             `json:"file_from_group,omitempty"`
+	FilePath       string            `json:"file"`
 }
 
 type GMCMember struct {

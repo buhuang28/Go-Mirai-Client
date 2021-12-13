@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -320,13 +321,13 @@ func AfterLogin(cli *client.QQClient) {
 	bot.BotClientLock.Unlock()
 	bot.SetRelogin(cli, 30, 20)
 	bot.BuhuangBotOnline(cli.Uin)
-	//go func() {
-	//	var qqInfo QQInfo
-	//	fileByte := ReadFileByte(QQINFOPATH + strconv.FormatInt(cli.Uin,10)+QQINFOSKIN)
-	//	json.Unmarshal(fileByte,&qqInfo)
-	//	getToken := cli.GenToken()
-	//	fmt.Println("获取token成功")
-	//	qqInfo.StoreLoginInfo(cli.Uin, qqInfo.PassWord,getToken)
-	//}()
+	go func() {
+		var qqInfo QQInfo
+		fileByte := ReadFileByte(QQINFOPATH + strconv.FormatInt(cli.Uin, 10) + QQINFOSKIN)
+		json.Unmarshal(fileByte, &qqInfo)
+		getToken := cli.GenToken()
+		fmt.Println("获取token成功")
+		qqInfo.StoreLoginInfo(cli.Uin, qqInfo.PassWord, getToken)
+	}()
 
 }

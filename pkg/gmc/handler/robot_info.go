@@ -7,6 +7,7 @@ import (
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/bot"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/device"
 	"strconv"
+	"time"
 )
 
 var (
@@ -46,8 +47,18 @@ func (q *QQInfo) Login() bool {
 		bot.Clients.Store(botClient.Uin, botClient)
 		go AfterLogin(botClient)
 		return true
+	} else {
+		fmt.Println("Token登录失败:", err)
+		time.Sleep(time.Second * 2)
+		err = botClient.TokenLogin(q.Token)
+		if err != nil {
+			fmt.Println("Token第二次登录失败:", err)
+		}
 	}
 	success := CreateBotImplMd5(q.QQ, q.PassWord, q.QQ)
+	if !success {
+		success = CreateBotImplMd5(q.QQ, q.PassWord, q.QQ)
+	}
 	if success {
 		go AfterLogin(botClient)
 	}

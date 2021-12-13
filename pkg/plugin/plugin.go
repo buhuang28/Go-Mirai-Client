@@ -195,7 +195,7 @@ func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
 		data.MsgType = bot.GMC_GROUP_MESSAGE
 		data.MessageId = int64(event.Id)
 		data.InternalId = event.InternalId
-		data.Message = bot.MiraiMsgToRawMsg(cli, event.Elements)
+		data.Message = bot.MiraiMsgToRawMsg2(cli, event.GroupCode, event.Elements)
 		marshal, _ := json.Marshal(data)
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
 	})

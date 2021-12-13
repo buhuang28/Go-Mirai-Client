@@ -20,7 +20,7 @@ func AutoLogin() {
 				fmt.Println("反序列化失败:", err)
 				continue
 			}
-			qqInfo.Login()
+			go qqInfo.Login()
 		}
 	}
 }

@@ -62,7 +62,7 @@ func HandleWSMsg() {
 		_, message, e := WsCon.ReadMessage()
 		fmt.Println("收到消息:", string(message))
 		if e != nil {
-			fmt.Println("出错了")
+			fmt.Println("出错了：", e)
 			time.Sleep(time.Second * 2)
 			go func() {
 				ConSucess = false
@@ -94,7 +94,7 @@ func HandleWSMsg() {
 		case GMC_BAN:
 			BuhuangBanGroupMember(cli, data.GroupId, data.UserId, data.Time)
 		case GMC_GROUP_FILE:
-			BuhuangUploadGroupFile(cli, data.GroupId, data.FileFromGroup, data.BusId, data.Message, data.FileId)
+			BuhuangUploadGroupFile(cli, data.GroupId, data.Message, data.FilePath)
 		}
 		//WsCon.WriteMessage(websocket.TextMessage, []byte("message"))
 	}

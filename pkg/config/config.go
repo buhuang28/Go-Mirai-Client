@@ -9,7 +9,7 @@ import (
 var (
 	Fragment = false // 是否分片
 	Port     = "9000"
-	SMS      = false
+	SMS      = true
 	Device   = ""
 	Conf     = &GmcConfig{
 		//SMS:  false,

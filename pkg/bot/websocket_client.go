@@ -37,7 +37,7 @@ func WSDailCall() {
 		} else {
 			Clients.Range(func(_ int64, cli *client.QQClient) bool {
 				if cli.Online {
-					fmt.Println("发送上线事件")
+					fmt.Println(cli.Uin, "发送上线事件")
 					BuhuangBotOnline(cli.Uin)
 				}
 				return true
@@ -93,6 +93,8 @@ func HandleWSMsg() {
 			BuhuangKickGroupMember(cli, data.GroupId, data.UserId)
 		case GMC_BAN:
 			BuhuangBanGroupMember(cli, data.GroupId, data.UserId, data.Time)
+		case GMC_GROUP_FILE:
+			BuhuangUploadGroupFile(cli, data.GroupId, data.FileFromGroup, data.BusId, data.Message, data.FileId)
 		}
 		//WsCon.WriteMessage(websocket.TextMessage, []byte("message"))
 	}

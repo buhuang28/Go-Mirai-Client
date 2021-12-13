@@ -14,6 +14,9 @@ type GMCWSData struct {
 	AllGroupMember GMCAllGroupMember `json:"all_group_member,omitempty"`
 	Time           int64             `json:"time,omitempty"`
 	GroupRequest   int64             `json:"group_request,omitempty"`
+	BusId          int64             `json:"bus_id,omitempty"`
+	FileId         string            `json:"file_id,omitempty"`
+	FileFromGroup  int64             `json:"file_from_group,omitempty"`
 }
 
 type GMCMember struct {
@@ -49,4 +52,12 @@ const (
 	GMC_BAN = 10
 	//入群请求
 	GMC_GROUP_REQUEST = 11
+	//机器人被邀请入群
+	GMC_BOT_INVITED = 12
+	//成员++
+	GMC_MEMBER_ADD = 13
+	//群员退群
+	GMC_MEMBER_LEAVE = 14
+	//群文件
+	GMC_GROUP_FILE = 15
 )

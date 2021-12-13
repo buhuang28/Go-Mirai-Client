@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
+	"github.com/ProtobufBot/Go-Mirai-Client/pkg/util"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 	"sync"
@@ -209,6 +210,12 @@ func BuhuangGetGroupFile(cli *client.QQClient, groupId int64) {
 }
 
 //上传群文件
-func BuhuangUploadGroupFile(cli *client.QQClient, groupId int64, filePath string) {
-
+func BuhuangUploadGroupFile(cli *client.QQClient, groupId, fromGroup, busId int64, fileName, filePath string) {
+	url := cli.GetGroupFileUrl(fromGroup, filePath, int32(busId))
+	downName := "C:\\data\\" + fileName
+	err := util.DownloadFile(url, downName, 0, nil)
+	if err == nil {
+		system, _ := cli.GetGroupFileSystem(groupId)
+		system.UploadFile(downName, fileName, "/")
+	}
 }

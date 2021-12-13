@@ -36,6 +36,8 @@ func MiraiMsgToRawMsg(cli *client.QQClient, messageChain []message.IMessageEleme
 			result += fmt.Sprintf(`<reply time="%d" sender="%d" raw_message="%s" reply_seq="%d"/>`, elem.Time, elem.Sender, html.EscapeString(MiraiMsgToRawMsg(cli, elem.Elements)), elem.ReplySeq)
 		case *clz.MyVideoElement:
 			result += fmt.Sprintf(`<video url="%s" cover="%s"/>`, html.EscapeString(elem.Url), html.EscapeString(elem.CoverUrl))
+		case *message.GroupFileElement:
+			result += fmt.Sprintf(`<file name="%s" path="%s" busid=%d/>`, elem.Name, elem.Path, elem.Busid)
 		}
 	}
 	return result

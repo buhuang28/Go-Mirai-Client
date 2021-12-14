@@ -635,6 +635,7 @@ var xxx_messageInfo_SolveCaptchaResp proto.InternalMessageInfo
 // 获取二维码 /qrcode/fetch/v1/
 type FetchQRCodeReq struct {
 	DeviceSeed           int64    `protobuf:"varint,1,opt,name=device_seed,json=deviceSeed,proto3" json:"device_seed,omitempty"`
+	Protocal             int      `json:"protocal"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`

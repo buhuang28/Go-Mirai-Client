@@ -203,11 +203,6 @@ func BuhuangGetAllGroupListAndMemberList(cli *client.QQClient) GMCAllGroupMember
 	return allGroupMember
 }
 
-//获取群文件下载路径
-func BuhuangGetGroupFile(cli *client.QQClient, groupId int64) {
-
-}
-
 //上传群文件
 func BuhuangUploadGroupFile(cli *client.QQClient, groupId int64, fileName, filePath string) {
 	//url := cli.GetGroupFileUrl(fromGroup, filePath, int32(busId))

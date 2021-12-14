@@ -235,6 +235,7 @@ func ReportMemberLeave(cli *client.QQClient, event *client.MemberLeaveGroupEvent
 	return plugin.MessageIgnore
 }
 
+//有人入群
 func ReportJoinGroup(cli *client.QQClient, event *client.GroupInfo) int32 {
 	eventProto := &onebot.Frame{
 		FrameType: onebot.Frame_TGroupIncreaseNoticeEvent,
@@ -255,6 +256,7 @@ func ReportJoinGroup(cli *client.QQClient, event *client.GroupInfo) int32 {
 	return plugin.MessageIgnore
 }
 
+//有人退群
 func ReportLeaveGroup(cli *client.QQClient, event *client.GroupLeaveEvent) int32 {
 	eventProto := &onebot.Frame{
 		FrameType: onebot.Frame_TGroupDecreaseNoticeEvent,

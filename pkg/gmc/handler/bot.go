@@ -155,6 +155,7 @@ func FetchQrCode(c *gin.Context) {
 	}
 	qrCodeBot = client.NewClientEmpty()
 	deviceInfo := device.GetDevice(req.DeviceSeed)
+	deviceInfo.Protocol = client.ClientProtocol(req.Protocal)
 	qrCodeBot.UseDevice(deviceInfo)
 
 	log.Infof("初始化日志")

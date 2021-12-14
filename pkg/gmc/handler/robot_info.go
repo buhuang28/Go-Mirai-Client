@@ -20,6 +20,8 @@ type QQInfo struct {
 	QQ       int64    `json:"qq"`
 	PassWord [16]byte `json:"pass_word"`
 	Token    []byte   `json:"token"`
+	//对应的随机种子文件
+	SeedFile string `json:"seed_file"`
 }
 
 func (q *QQInfo) StoreLoginInfo(qq int64, pw [16]byte, token []byte) bool {
@@ -48,11 +50,11 @@ func (q *QQInfo) Login() bool {
 		go AfterLogin(botClient)
 		return true
 	} else {
-		fmt.Println("Token登录失败:", err)
+		fmt.Println("Token登录失败:", err, q.Token)
 		time.Sleep(time.Second * 2)
 		err = botClient.TokenLogin(q.Token)
 		if err != nil {
-			fmt.Println("Token第二次登录失败:", err)
+			fmt.Println("Token第二次登录失败:", err, q.Token)
 		}
 	}
 	success := CreateBotImplMd5(q.QQ, q.PassWord, q.QQ)

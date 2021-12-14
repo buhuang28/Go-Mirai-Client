@@ -381,7 +381,7 @@ func HandleSetFriendAddRequest(cli *client.QQClient, req *onebot.SetFriendAddReq
 	return &onebot.SetFriendAddRequestResp{}
 }
 
-//出列有人申请入群的请求 和 处理机器人要邀请入群的请求
+//处理 有人申请入群的请求 和 处理机器人要邀请入群的请求
 func HandleSetGroupAddRequest(cli *client.QQClient, req *onebot.SetGroupAddRequestReq) *onebot.SetGroupAddRequestResp {
 	eventInterface, isGroupRequest := cache.GroupRequestLru.Get(req.Flag)
 	if isGroupRequest {

@@ -13,11 +13,15 @@ type GMCWSData struct {
 	ManageGroup    []int64           `json:"manage_group,omitempty"`
 	AllGroupMember GMCAllGroupMember `json:"all_group_member,omitempty"`
 	Time           int64             `json:"time,omitempty"`
-	GroupRequest   int64             `json:"group_request,omitempty"`
 	BusId          int64             `json:"bus_id,omitempty"`
 	FileId         string            `json:"file_id,omitempty"`
 	FileFromGroup  int64             `json:"file_from_group,omitempty"`
-	FilePath       string            `json:"file"`
+	FilePath       string            `json:"file,omitempty"`
+	NickName       string            `json:"nick_name,omitempty"`
+	RequestId      string            `json:"request_id,omitempty"`
+	GroupRequest   int64             `json:"group_request,omitempty"`
+	InvitorId      int64             `json:"invitor_id,omitempty"`
+	InvitorName    string            `json:"invitor_name,omitempty"`
 }
 
 type GMCMember struct {
@@ -53,7 +57,7 @@ const (
 	GMC_BAN = 10
 	//入群请求
 	GMC_GROUP_REQUEST = 11
-	//机器人被邀请入群
+	//可能是机器人被邀请入群也可能是别人被邀请入群
 	GMC_BOT_INVITED = 12
 	//成员++
 	GMC_MEMBER_ADD = 13

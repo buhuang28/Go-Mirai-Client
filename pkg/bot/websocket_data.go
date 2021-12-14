@@ -18,7 +18,7 @@ type GMCWSData struct {
 	FileFromGroup  int64             `json:"file_from_group,omitempty"`
 	FilePath       string            `json:"file,omitempty"`
 	NickName       string            `json:"nick_name,omitempty"`
-	RequestId      string            `json:"request_id,omitempty"`
+	RequestId      int64             `json:"request_id,omitempty"`
 	GroupRequest   int64             `json:"group_request,omitempty"`
 	InvitorId      int64             `json:"invitor_id,omitempty"`
 	InvitorName    string            `json:"invitor_name,omitempty"`

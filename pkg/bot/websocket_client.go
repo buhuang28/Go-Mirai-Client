@@ -12,6 +12,7 @@ import (
 
 var (
 	WsCon          *websocket.Conn
+	WSLock         sync.Mutex
 	ConSucess      bool        = false
 	WSClientHeader http.Header = make(map[string][]string)
 	BotClientMap               = make(map[int64]*client.QQClient)

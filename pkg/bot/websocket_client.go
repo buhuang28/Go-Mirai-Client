@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Mrs4s/MiraiGo/client"
+	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
 	"github.com/gorilla/websocket"
 	"net/http"
 	"sync"
@@ -72,7 +73,7 @@ func HandleWSMsg() {
 			}()
 			continue
 		}
-		var data GMCWSData
+		var data ws_data.GMCWSData
 		_ = json.Unmarshal(message, &data)
 		BotClientLock.Lock()
 		cli := BotClientMap[data.BotId]
@@ -80,22 +81,24 @@ func HandleWSMsg() {
 
 		miraiMsg := RawMsgToMiraiMsg(cli, data.Message)
 		switch data.MsgType {
-		case GMC_PRIVATE_MESSAGE, GMC_TEMP_MESSAGE:
+		case ws_data.GMC_PRIVATE_MESSAGE, ws_data.GMC_TEMP_MESSAGE:
 			BuHuangSendPrivateMsg(cli, miraiMsg, data.UserId, data.GroupId)
-		case GMC_GROUP_MESSAGE:
+		case ws_data.GMC_GROUP_MESSAGE:
 			BuHuangSendGroupMsg(cli, miraiMsg, data.MessageId, data.GroupId)
-		case GMC_WITHDRAW_MESSAGE:
+		case ws_data.GMC_WITHDRAW_MESSAGE:
 			BuBuhuangWithDrawMsg(cli, data.GroupId, data.MessageId, data.InternalId)
-		case GMC_ALLGROUPMEMBER:
+		case ws_data.GMC_ALLGROUPMEMBER:
 			HandleGetAllMember(cli)
-		case GMC_GROUP_LIST:
+		case ws_data.GMC_GROUP_LIST:
 			HandleGroupList(cli)
-		case GMC_KICK:
+		case ws_data.GMC_KICK:
 			BuhuangKickGroupMember(cli, data.GroupId, data.UserId)
-		case GMC_BAN:
+		case ws_data.GMC_BAN:
 			BuhuangBanGroupMember(cli, data.GroupId, data.UserId, data.Time)
-		case GMC_GROUP_FILE:
+		case ws_data.GMC_GROUP_FILE:
 			BuhuangUploadGroupFile(cli, data.GroupId, data.Message, data.FilePath)
+		case ws_data.GMC_GROUP_REQUEST, ws_data.GMC_BOT_INVITED:
+			ws_data.HandleCallBackEvent(data)
 		}
 		//WsCon.WriteMessage(websocket.TextMessage, []byte("message"))
 	}

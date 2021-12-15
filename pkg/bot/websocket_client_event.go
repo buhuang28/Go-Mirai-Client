@@ -3,14 +3,15 @@ package bot
 import (
 	"encoding/json"
 	"github.com/Mrs4s/MiraiGo/client"
+	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 )
 
 func HandleGetAllMember(cli *client.QQClient) {
-	var data GMCWSData
+	var data ws_data.GMCWSData
 	data.BotId = cli.Uin
-	data.MsgType = GMC_ALLGROUPMEMBER
+	data.MsgType = ws_data.GMC_ALLGROUPMEMBER
 	list := BuhuangGetAllGroupListAndMemberList(cli)
 	data.AllGroupMember = list
 	marshal, err := json.Marshal(data)
@@ -22,9 +23,9 @@ func HandleGetAllMember(cli *client.QQClient) {
 }
 
 func HandleGroupList(cli *client.QQClient) {
-	var data GMCWSData
+	var data ws_data.GMCWSData
 	data.BotId = cli.Uin
-	data.MsgType = GMC_GROUP_LIST
+	data.MsgType = ws_data.GMC_GROUP_LIST
 	list := BuhuangGetGroupList(cli)
 	data.GroupList = list
 	marshal, err := json.Marshal(data)

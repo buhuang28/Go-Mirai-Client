@@ -6,8 +6,8 @@ import (
 	"github.com/Mrs4s/MiraiGo/message"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/bot"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/util"
+	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
 	"github.com/gorilla/websocket"
-	"sync"
 	"time"
 )
 
@@ -36,8 +36,6 @@ const (
 )
 
 var (
-	ChanMap        = make(map[int64]chan bot.GMCWSData)
-	ChanMapLock    sync.Mutex
 	REQUEST_ACCEPT int64 = 1
 	REQUEST_REJECT int64 = -1
 )
@@ -171,10 +169,10 @@ func handlePrivateMessage(cli *client.QQClient, event *message.PrivateMessage) {
 	}
 	util.SafeGo(func() {
 		cli.MarkPrivateMessageReaded(event.Sender.Uin, int64(event.Time))
-		var data bot.GMCWSData
+		var data ws_data.GMCWSData
 		data.BotId = cli.Uin
 		data.UserId = event.Sender.Uin
-		data.MsgType = bot.GMC_PRIVATE_MESSAGE
+		data.MsgType = ws_data.GMC_PRIVATE_MESSAGE
 		data.Message = bot.MiraiMsgToRawMsg(cli, event.Elements)
 		marshal, _ := json.Marshal(data)
 		bot.WSLock.Lock()
@@ -193,11 +191,11 @@ func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
 
 	util.SafeGo(func() {
 		cli.MarkGroupMessageReaded(event.GroupCode, int64(event.Id))
-		var data bot.GMCWSData
+		var data ws_data.GMCWSData
 		data.BotId = cli.Uin
 		data.GroupId = event.GroupCode
 		data.UserId = event.Sender.Uin
-		data.MsgType = bot.GMC_GROUP_MESSAGE
+		data.MsgType = ws_data.GMC_GROUP_MESSAGE
 		data.MessageId = int64(event.Id)
 		data.InternalId = event.InternalId
 		data.Message = bot.MiraiMsgToRawMsg2(cli, event.GroupCode, event.Elements)
@@ -216,11 +214,11 @@ func handleTempMessage(cli *client.QQClient, event *client.TempMessageEvent) {
 		return
 	}
 	util.SafeGo(func() {
-		var data bot.GMCWSData
+		var data ws_data.GMCWSData
 		data.BotId = cli.Uin
 		data.GroupId = event.Message.GroupCode
 		data.UserId = event.Message.Sender.Uin
-		data.MsgType = bot.GMC_TEMP_MESSAGE
+		data.MsgType = ws_data.GMC_TEMP_MESSAGE
 		data.Message = bot.MiraiMsgToRawMsg(cli, event.Message.Elements)
 		marshal, _ := json.Marshal(data)
 		bot.WSLock.Lock()
@@ -237,12 +235,12 @@ func handleMemberJoinGroup(cli *client.QQClient, event *client.MemberJoinGroupEv
 		return
 	}
 	util.SafeGo(func() {
-		var data bot.GMCWSData
+		var data ws_data.GMCWSData
 		data.GroupId = event.Group.Code
 		data.UserId = event.Member.Uin
 		data.NickName = event.Member.Nickname
 		data.BotId = cli.Uin
-		data.MsgType = bot.GMC_MEMBER_ADD
+		data.MsgType = ws_data.GMC_MEMBER_ADD
 		marshal, _ := json.Marshal(data)
 		bot.WSLock.Lock()
 		defer func() {
@@ -258,11 +256,11 @@ func handleMemberLeaveGroup(cli *client.QQClient, event *client.MemberLeaveGroup
 		return
 	}
 	util.SafeGo(func() {
-		var data bot.GMCWSData
+		var data ws_data.GMCWSData
 		data.GroupId = event.Group.Code
 		data.UserId = event.Member.Uin
 		data.BotId = cli.Uin
-		data.MsgType = bot.GMC_MEMBER_LEAVE
+		data.MsgType = ws_data.GMC_MEMBER_LEAVE
 		marshal, _ := json.Marshal(data)
 		bot.WSLock.Lock()
 		defer func() {
@@ -278,8 +276,8 @@ func handleUserJoinGroupRequest(cli *client.QQClient, event *client.UserJoinGrou
 		return
 	}
 	util.SafeGo(func() {
-		var data bot.GMCWSData
-		data.MsgType = bot.GMC_GROUP_REQUEST
+		var data ws_data.GMCWSData
+		data.MsgType = ws_data.GMC_GROUP_REQUEST
 		data.BotId = cli.Uin
 		data.GroupId = event.GroupCode
 		data.UserId = event.RequesterUin
@@ -290,10 +288,10 @@ func handleUserJoinGroupRequest(cli *client.QQClient, event *client.UserJoinGrou
 		bot.WSLock.Lock()
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
 		bot.WSLock.Unlock()
-		ch := make(chan bot.GMCWSData, 1)
-		ChanMapLock.Lock()
-		ChanMap[event.RequestId] = ch
-		ChanMapLock.Unlock()
+		ch := make(chan ws_data.GMCWSData, 1)
+		ws_data.ChanMapLock.Lock()
+		ws_data.ChanMap[event.RequestId] = ch
+		ws_data.ChanMapLock.Unlock()
 		select {
 		case r := <-ch:
 			switch r.GroupRequest {
@@ -303,9 +301,9 @@ func handleUserJoinGroupRequest(cli *client.QQClient, event *client.UserJoinGrou
 				event.Reject(false, "")
 			}
 		case <-time.After(time.Second * 30):
-			ChanMapLock.Lock()
-			delete(ChanMap, event.RequestId)
-			ChanMapLock.Unlock()
+			ws_data.ChanMapLock.Lock()
+			delete(ws_data.ChanMap, event.RequestId)
+			ws_data.ChanMapLock.Unlock()
 			return
 		}
 	})
@@ -317,8 +315,8 @@ func handleGroupInvitedRequest(cli *client.QQClient, event *client.GroupInvitedR
 		return
 	}
 	util.SafeGo(func() {
-		var data bot.GMCWSData
-		data.MsgType = bot.GMC_BOT_INVITED
+		var data ws_data.GMCWSData
+		data.MsgType = ws_data.GMC_BOT_INVITED
 		data.BotId = cli.Uin
 		data.GroupId = event.GroupCode
 		data.NickName = event.InvitorNick
@@ -328,10 +326,10 @@ func handleGroupInvitedRequest(cli *client.QQClient, event *client.GroupInvitedR
 		bot.WSLock.Lock()
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
 		bot.WSLock.Unlock()
-		ch := make(chan bot.GMCWSData, 1)
-		ChanMapLock.Lock()
-		ChanMap[event.RequestId] = ch
-		ChanMapLock.Unlock()
+		ch := make(chan ws_data.GMCWSData, 1)
+		ws_data.ChanMapLock.Lock()
+		ws_data.ChanMap[event.RequestId] = ch
+		ws_data.ChanMapLock.Unlock()
 		select {
 		case r := <-ch:
 			switch r.GroupRequest {
@@ -342,9 +340,9 @@ func handleGroupInvitedRequest(cli *client.QQClient, event *client.GroupInvitedR
 			}
 			return
 		case <-time.After(time.Second * 30):
-			ChanMapLock.Lock()
-			delete(ChanMap, event.RequestId)
-			ChanMapLock.Unlock()
+			ws_data.ChanMapLock.Lock()
+			delete(ws_data.ChanMap, event.RequestId)
+			ws_data.ChanMapLock.Unlock()
 			return
 		}
 	})

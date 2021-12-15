@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
+	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 	"sync"
@@ -88,9 +89,9 @@ func BuBuhuangWithDrawMsg(cli *client.QQClient, groupId, msgId int64, internalId
 //往websocket-server传递上线消息
 func BuhuangBotOnline(botId int64) {
 	if WsCon != nil {
-		var data GMCWSData
+		var data ws_data.GMCWSData
 		data.BotId = botId
-		data.MsgType = GMC_ONLINE
+		data.MsgType = ws_data.GMC_ONLINE
 		marshal, _ := json.Marshal(data)
 		WsCon.WriteMessage(websocket.TextMessage, marshal)
 	}
@@ -99,9 +100,9 @@ func BuhuangBotOnline(botId int64) {
 //往websocket-server传递下线消息
 func BuhuangBotOffline(botId int64) {
 	if WsCon != nil {
-		var data GMCWSData
+		var data ws_data.GMCWSData
 		data.BotId = botId
-		data.MsgType = GMC_OFFLINE
+		data.MsgType = ws_data.GMC_OFFLINE
 		marshal, _ := json.Marshal(data)
 		WsCon.WriteMessage(websocket.TextMessage, marshal)
 	}
@@ -146,11 +147,11 @@ func BuhuangKickGroupMember(cli *client.QQClient, groupId, userId int64) {
 }
 
 //获取QQ群列表
-func BuhuangGetGroupList(cli *client.QQClient) []GMCGroup {
-	var groupInfoList []GMCGroup
+func BuhuangGetGroupList(cli *client.QQClient) []ws_data.GMCGroup {
+	var groupInfoList []ws_data.GMCGroup
 	groupList := cli.GroupList
 	for _, v := range groupList {
-		var group GMCGroup
+		var group ws_data.GMCGroup
 		group.GroupId = v.Code
 		group.GroupName = v.Name
 		groupInfoList = append(groupInfoList, group)
@@ -159,8 +160,8 @@ func BuhuangGetGroupList(cli *client.QQClient) []GMCGroup {
 }
 
 //获取特定群成员
-func BuhuangGetGroupMemberList(cli *client.QQClient, groupId int64) []GMCMember {
-	var memberList []GMCMember
+func BuhuangGetGroupMemberList(cli *client.QQClient, groupId int64) []ws_data.GMCMember {
+	var memberList []ws_data.GMCMember
 
 	group := cli.FindGroup(groupId)
 	if group == nil {
@@ -172,7 +173,7 @@ func BuhuangGetGroupMemberList(cli *client.QQClient, groupId int64) []GMCMember 
 		return nil
 	}
 	for _, v := range members {
-		var gmcMember GMCMember
+		var gmcMember ws_data.GMCMember
 		gmcMember.QQ = v.Uin
 		gmcMember.Level = v.Level
 		gmcMember.Permission = int64(v.Permission)
@@ -182,14 +183,14 @@ func BuhuangGetGroupMemberList(cli *client.QQClient, groupId int64) []GMCMember 
 }
 
 //获取全部群、成员 -- 这里需要做缓存
-func BuhuangGetAllGroupListAndMemberList(cli *client.QQClient) GMCAllGroupMember {
-	var allGroupMember GMCAllGroupMember
-	data := make(map[int64][]GMCMember)
+func BuhuangGetAllGroupListAndMemberList(cli *client.QQClient) ws_data.GMCAllGroupMember {
+	var allGroupMember ws_data.GMCAllGroupMember
+	data := make(map[int64][]ws_data.GMCMember)
 	groupList := cli.GroupList
 	for _, v := range groupList {
-		var gmcMemberList []GMCMember
+		var gmcMemberList []ws_data.GMCMember
 		for _, v2 := range v.Members {
-			var member GMCMember
+			var member ws_data.GMCMember
 			member.QQ = v2.Uin
 			member.Level = v2.Level
 			member.Permission = int64(v2.Permission)

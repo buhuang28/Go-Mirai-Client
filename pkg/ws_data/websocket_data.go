@@ -1,4 +1,4 @@
-package bot
+package ws_data
 
 type GMCWSData struct {
 	MsgType        int64             `json:"msg_type"`

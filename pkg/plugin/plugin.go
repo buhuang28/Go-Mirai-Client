@@ -164,6 +164,7 @@ func AddMemberPermissionChangedPlugin(plugin MemberPermissionChangedPlugin) {
 	MemberPermissionChangedPluginList = append(MemberPermissionChangedPluginList, plugin)
 }
 
+//私聊消息
 func handlePrivateMessage(cli *client.QQClient, event *message.PrivateMessage) {
 	if bot.WsCon == nil || !bot.ConSucess {
 		return
@@ -179,6 +180,7 @@ func handlePrivateMessage(cli *client.QQClient, event *message.PrivateMessage) {
 	})
 }
 
+//群消息
 func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
 	if bot.WsCon == nil || !bot.ConSucess {
 		return
@@ -197,6 +199,7 @@ func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
 	})
 }
 
+//临时消息
 func handleTempMessage(cli *client.QQClient, event *client.TempMessageEvent) {
 	if bot.WsCon == nil || !bot.ConSucess {
 		return
@@ -243,38 +246,6 @@ func handleMemberLeaveGroup(cli *client.QQClient, event *client.MemberLeaveGroup
 		data.MsgType = bot.GMC_MEMBER_LEAVE
 		marshal, _ := json.Marshal(data)
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-	})
-}
-
-//机器人入群
-func handleJoinGroup(cli *client.QQClient, event *client.GroupInfo) {
-	util.SafeGo(func() {
-		for _, plugin := range JoinGroupPluginList {
-			if result := plugin(cli, event); result == MessageBlock {
-				break
-			}
-		}
-	})
-}
-
-//机器人退群
-func handleLeaveGroup(cli *client.QQClient, event *client.GroupLeaveEvent) {
-	util.SafeGo(func() {
-		for _, plugin := range LeaveGroupPluginList {
-			if result := plugin(cli, event); result == MessageBlock {
-				break
-			}
-		}
-	})
-}
-
-func handleNewFriendRequest(cli *client.QQClient, event *client.NewFriendRequest) {
-	util.SafeGo(func() {
-		for _, plugin := range NewFriendRequestPluginList {
-			if result := plugin(cli, event); result == MessageBlock {
-				break
-			}
-		}
 	})
 }
 
@@ -327,6 +298,7 @@ func handleGroupInvitedRequest(cli *client.QQClient, event *client.GroupInvitedR
 		data.GroupId = event.GroupCode
 		data.NickName = event.InvitorNick
 		data.InvitorId = event.InvitorUin
+		data.RequestId = event.RequestId
 		marshal, _ := json.Marshal(data)
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
 		ch := make(chan bot.GMCWSData, 1)
@@ -337,9 +309,9 @@ func handleGroupInvitedRequest(cli *client.QQClient, event *client.GroupInvitedR
 		case r := <-ch:
 			switch r.GroupRequest {
 			case REQUEST_ACCEPT:
-				event.Accept()
+				cli.SolveGroupJoinRequest(event, true, false, "")
 			case REQUEST_REJECT:
-				event.Reject(false, "")
+				cli.SolveGroupJoinRequest(event, false, false, "")
 			}
 			return
 		case <-time.After(time.Second * 30):
@@ -347,6 +319,38 @@ func handleGroupInvitedRequest(cli *client.QQClient, event *client.GroupInvitedR
 			delete(ChanMap, event.RequestId)
 			ChanMapLock.Unlock()
 			return
+		}
+	})
+}
+
+//机器人退群
+func handleLeaveGroup(cli *client.QQClient, event *client.GroupLeaveEvent) {
+	util.SafeGo(func() {
+		for _, plugin := range LeaveGroupPluginList {
+			if result := plugin(cli, event); result == MessageBlock {
+				break
+			}
+		}
+	})
+}
+
+func handleNewFriendRequest(cli *client.QQClient, event *client.NewFriendRequest) {
+	util.SafeGo(func() {
+		for _, plugin := range NewFriendRequestPluginList {
+			if result := plugin(cli, event); result == MessageBlock {
+				break
+			}
+		}
+	})
+}
+
+//机器人入群
+func handleJoinGroup(cli *client.QQClient, event *client.GroupInfo) {
+	util.SafeGo(func() {
+		for _, plugin := range JoinGroupPluginList {
+			if result := plugin(cli, event); result == MessageBlock {
+				break
+			}
 		}
 	})
 }

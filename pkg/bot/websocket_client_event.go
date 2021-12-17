@@ -18,6 +18,8 @@ func HandleGetAllMember(cli *client.QQClient) {
 	if err != nil {
 		log.Info(cli.Uin, "获取全部群成员列表失败:", err)
 	} else {
+		WSWLock.Lock()
+		defer WSWLock.Unlock()
 		WsCon.WriteMessage(websocket.TextMessage, marshal)
 	}
 }
@@ -32,6 +34,8 @@ func HandleGroupList(cli *client.QQClient) {
 	if err != nil {
 		log.Info("%d获取群列表失败", cli.Uin)
 	} else {
+		WSWLock.Lock()
+		defer WSWLock.Unlock()
 		WsCon.WriteMessage(websocket.TextMessage, marshal)
 	}
 }

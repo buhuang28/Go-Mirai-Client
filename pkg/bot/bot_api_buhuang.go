@@ -92,6 +92,14 @@ func BuhuangBotOnline(botId int64) {
 		var data ws_data.GMCWSData
 		data.BotId = botId
 		data.MsgType = ws_data.GMC_ONLINE
+		WSWLock.Lock()
+		defer func() {
+			e := recover()
+			if e != nil {
+				ws_data.PrintStackTrace(e)
+			}
+			WSWLock.Unlock()
+		}()
 		marshal, _ := json.Marshal(data)
 		WsCon.WriteMessage(websocket.TextMessage, marshal)
 	}

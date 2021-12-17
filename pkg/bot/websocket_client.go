@@ -13,7 +13,8 @@ import (
 
 var (
 	WsCon          *websocket.Conn
-	WSLock         sync.Mutex
+	WSWLock        sync.Mutex
+	WSRLock        sync.Mutex
 	ConSucess      bool        = false
 	WSClientHeader http.Header = make(map[string][]string)
 	BotClientMap               = make(map[int64]*client.QQClient)
@@ -32,7 +33,6 @@ func WSDailCall() {
 			break
 		}
 		WSClientHeader.Add("origin", WSClientOrigin)
-
 		WsCon, _, err = websocket.DefaultDialer.Dial(WSServerAddr, WSClientHeader)
 		if err != nil || WsCon == nil {
 			fmt.Println(err)
@@ -45,9 +45,6 @@ func WSDailCall() {
 				return true
 			})
 			ConSucess = true
-			//go func() {
-			//	HandleWSMsg()
-			//}()
 			return
 		}
 		time.Sleep(time.Second * 2)
@@ -56,12 +53,17 @@ func WSDailCall() {
 
 //处理Websocket-Server的消息，一般负责调用API
 func HandleWSMsg() {
+	fmt.Println("进行ws处理")
 	for {
 		if WsCon == nil || !ConSucess {
 			time.Sleep(time.Second)
 			continue
 		}
+		WSRLock.Lock()
+		fmt.Println("上锁")
 		_, message, e := WsCon.ReadMessage()
+		WSRLock.Unlock()
+		fmt.Println("解锁")
 		fmt.Println("收到消息:", string(message))
 		if e != nil {
 			fmt.Println("出错了：", e)
@@ -100,6 +102,5 @@ func HandleWSMsg() {
 		case ws_data.GMC_GROUP_REQUEST, ws_data.GMC_BOT_INVITED:
 			ws_data.HandleCallBackEvent(data)
 		}
-		//WsCon.WriteMessage(websocket.TextMessage, []byte("message"))
 	}
 }

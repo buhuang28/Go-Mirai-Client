@@ -173,12 +173,16 @@ func handlePrivateMessage(cli *client.QQClient, event *message.PrivateMessage) {
 		data.BotId = cli.Uin
 		data.UserId = event.Sender.Uin
 		data.MsgType = ws_data.GMC_PRIVATE_MESSAGE
+		bot.WSWLock.Lock()
+		defer func() {
+			e := recover()
+			if e != nil {
+				ws_data.PrintStackTrace(e)
+			}
+			bot.WSWLock.Unlock()
+		}()
 		data.Message = bot.MiraiMsgToRawMsg(cli, event.Elements)
 		marshal, _ := json.Marshal(data)
-		bot.WSLock.Lock()
-		defer func() {
-			bot.WSLock.Unlock()
-		}()
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
 	})
 }
@@ -198,12 +202,16 @@ func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
 		data.MsgType = ws_data.GMC_GROUP_MESSAGE
 		data.MessageId = int64(event.Id)
 		data.InternalId = event.InternalId
+		bot.WSWLock.Lock()
+		defer func() {
+			e := recover()
+			if e != nil {
+				ws_data.PrintStackTrace(e)
+			}
+			bot.WSWLock.Unlock()
+		}()
 		data.Message = bot.MiraiMsgToRawMsg2(cli, event.GroupCode, event.Elements)
 		marshal, _ := json.Marshal(data)
-		bot.WSLock.Lock()
-		defer func() {
-			bot.WSLock.Unlock()
-		}()
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
 	})
 }
@@ -219,12 +227,16 @@ func handleTempMessage(cli *client.QQClient, event *client.TempMessageEvent) {
 		data.GroupId = event.Message.GroupCode
 		data.UserId = event.Message.Sender.Uin
 		data.MsgType = ws_data.GMC_TEMP_MESSAGE
+		bot.WSWLock.Lock()
+		defer func() {
+			e := recover()
+			if e != nil {
+				ws_data.PrintStackTrace(e)
+			}
+			bot.WSWLock.Unlock()
+		}()
 		data.Message = bot.MiraiMsgToRawMsg(cli, event.Message.Elements)
 		marshal, _ := json.Marshal(data)
-		bot.WSLock.Lock()
-		defer func() {
-			bot.WSLock.Unlock()
-		}()
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
 	})
 }
@@ -242,9 +254,13 @@ func handleMemberJoinGroup(cli *client.QQClient, event *client.MemberJoinGroupEv
 		data.BotId = cli.Uin
 		data.MsgType = ws_data.GMC_MEMBER_ADD
 		marshal, _ := json.Marshal(data)
-		bot.WSLock.Lock()
+		bot.WSWLock.Lock()
 		defer func() {
-			bot.WSLock.Unlock()
+			e := recover()
+			if e != nil {
+				ws_data.PrintStackTrace(e)
+			}
+			bot.WSWLock.Unlock()
 		}()
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
 	})
@@ -262,9 +278,13 @@ func handleMemberLeaveGroup(cli *client.QQClient, event *client.MemberLeaveGroup
 		data.BotId = cli.Uin
 		data.MsgType = ws_data.GMC_MEMBER_LEAVE
 		marshal, _ := json.Marshal(data)
-		bot.WSLock.Lock()
+		bot.WSWLock.Lock()
 		defer func() {
-			bot.WSLock.Unlock()
+			e := recover()
+			if e != nil {
+				ws_data.PrintStackTrace(e)
+			}
+			bot.WSWLock.Unlock()
 		}()
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
 	})
@@ -285,9 +305,9 @@ func handleUserJoinGroupRequest(cli *client.QQClient, event *client.UserJoinGrou
 		data.RequestId = event.RequestId
 		data.Message = event.Message
 		marshal, _ := json.Marshal(data)
-		bot.WSLock.Lock()
+		bot.WSWLock.Lock()
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-		bot.WSLock.Unlock()
+		bot.WSWLock.Unlock()
 		ch := make(chan ws_data.GMCWSData, 1)
 		ws_data.ChanMapLock.Lock()
 		ws_data.ChanMap[event.RequestId] = ch
@@ -323,9 +343,9 @@ func handleGroupInvitedRequest(cli *client.QQClient, event *client.GroupInvitedR
 		data.InvitorId = event.InvitorUin
 		data.RequestId = event.RequestId
 		marshal, _ := json.Marshal(data)
-		bot.WSLock.Lock()
+		bot.WSWLock.Lock()
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-		bot.WSLock.Unlock()
+		bot.WSWLock.Unlock()
 		ch := make(chan ws_data.GMCWSData, 1)
 		ws_data.ChanMapLock.Lock()
 		ws_data.ChanMap[event.RequestId] = ch

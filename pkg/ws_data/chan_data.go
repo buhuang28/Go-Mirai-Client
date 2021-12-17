@@ -27,6 +27,7 @@ func HandleCallBackEvent(data GMCWSData) {
 	ch <- data
 }
 
+//打印错误堆栈
 func PrintStackTrace(err interface{}) {
 	buf := new(bytes.Buffer)
 	fmt.Fprintf(buf, "%v\n", err)

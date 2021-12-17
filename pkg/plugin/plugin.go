@@ -175,10 +175,6 @@ func handlePrivateMessage(cli *client.QQClient, event *message.PrivateMessage) {
 		data.MsgType = ws_data.GMC_PRIVATE_MESSAGE
 		bot.WSWLock.Lock()
 		defer func() {
-			e := recover()
-			if e != nil {
-				ws_data.PrintStackTrace(e)
-			}
 			bot.WSWLock.Unlock()
 		}()
 		data.Message = bot.MiraiMsgToRawMsg(cli, event.Elements)
@@ -204,10 +200,6 @@ func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
 		data.InternalId = event.InternalId
 		bot.WSWLock.Lock()
 		defer func() {
-			e := recover()
-			if e != nil {
-				ws_data.PrintStackTrace(e)
-			}
 			bot.WSWLock.Unlock()
 		}()
 		data.Message = bot.MiraiMsgToRawMsg2(cli, event.GroupCode, event.Elements)
@@ -229,10 +221,6 @@ func handleTempMessage(cli *client.QQClient, event *client.TempMessageEvent) {
 		data.MsgType = ws_data.GMC_TEMP_MESSAGE
 		bot.WSWLock.Lock()
 		defer func() {
-			e := recover()
-			if e != nil {
-				ws_data.PrintStackTrace(e)
-			}
 			bot.WSWLock.Unlock()
 		}()
 		data.Message = bot.MiraiMsgToRawMsg(cli, event.Message.Elements)
@@ -256,10 +244,6 @@ func handleMemberJoinGroup(cli *client.QQClient, event *client.MemberJoinGroupEv
 		marshal, _ := json.Marshal(data)
 		bot.WSWLock.Lock()
 		defer func() {
-			e := recover()
-			if e != nil {
-				ws_data.PrintStackTrace(e)
-			}
 			bot.WSWLock.Unlock()
 		}()
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
@@ -280,10 +264,6 @@ func handleMemberLeaveGroup(cli *client.QQClient, event *client.MemberLeaveGroup
 		marshal, _ := json.Marshal(data)
 		bot.WSWLock.Lock()
 		defer func() {
-			e := recover()
-			if e != nil {
-				ws_data.PrintStackTrace(e)
-			}
 			bot.WSWLock.Unlock()
 		}()
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)

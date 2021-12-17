@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
 	"net/http"
 	"strconv"
 	"sync"
@@ -55,6 +56,10 @@ func init() {
 }
 
 func CreateBot(c *gin.Context) {
+	e := recover()
+	if e != nil {
+		ws_data.PrintStackTrace(e)
+	}
 	req := &dto.CreateBotReq{}
 	err := c.Bind(req)
 	if err != nil {
@@ -78,6 +83,10 @@ func CreateBot(c *gin.Context) {
 }
 
 func DeleteBot(c *gin.Context) {
+	e := recover()
+	if e != nil {
+		ws_data.PrintStackTrace(e)
+	}
 	req := &dto.DeleteBotReq{}
 	err := c.Bind(req)
 	if err != nil {
@@ -95,6 +104,10 @@ func DeleteBot(c *gin.Context) {
 }
 
 func ListBot(c *gin.Context) {
+	e := recover()
+	if e != nil {
+		ws_data.PrintStackTrace(e)
+	}
 	req := &dto.ListBotReq{}
 	err := c.Bind(req)
 	if err != nil {
@@ -121,6 +134,10 @@ func ListBot(c *gin.Context) {
 }
 
 func SolveCaptcha(c *gin.Context) {
+	e := recover()
+	if e != nil {
+		ws_data.PrintStackTrace(e)
+	}
 	req := &dto.SolveCaptchaReq{}
 	err := c.Bind(req)
 	if err != nil {
@@ -144,6 +161,10 @@ func SolveCaptcha(c *gin.Context) {
 }
 
 func FetchQrCode(c *gin.Context) {
+	e := recover()
+	if e != nil {
+		ws_data.PrintStackTrace(e)
+	}
 	req := &dto.FetchQRCodeReq{}
 	err := c.Bind(req)
 	if err != nil {
@@ -174,6 +195,10 @@ func FetchQrCode(c *gin.Context) {
 }
 
 func QueryQRCodeStatus(c *gin.Context) {
+	e := recover()
+	if e != nil {
+		ws_data.PrintStackTrace(e)
+	}
 	queryQRCodeMutex.Lock()
 	defer queryQRCodeMutex.Unlock()
 	req := &dto.QueryQRCodeStatusReq{}

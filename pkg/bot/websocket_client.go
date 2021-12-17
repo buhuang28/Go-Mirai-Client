@@ -60,10 +60,8 @@ func HandleWSMsg() {
 			continue
 		}
 		WSRLock.Lock()
-		fmt.Println("上锁")
 		_, message, e := WsCon.ReadMessage()
 		WSRLock.Unlock()
-		fmt.Println("解锁")
 		fmt.Println("收到消息:", string(message))
 		if e != nil {
 			fmt.Println("出错了：", e)

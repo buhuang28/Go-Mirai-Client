@@ -2,6 +2,7 @@ package bot
 
 import (
 	"bytes"
+	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
 	"math"
 	"strconv"
 	_ "unsafe"
@@ -41,6 +42,12 @@ func splitText(content string, limit int) []string {
 
 // 预处理私聊消息，上传图片，MiraiGo更新后删除
 func preProcessPrivateSendingMessage(cli *client.QQClient, target int64, m *message.SendingMessage) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	newElements := make([]message.IMessageElement, 0, len(m.Elements))
 	for _, element := range m.Elements {
 		if _, ok := element.(*clz.PokeElement); ok {
@@ -84,6 +91,12 @@ func preProcessPrivateSendingMessage(cli *client.QQClient, target int64, m *mess
 
 // 预处理群消息，上传图片/语音，MiraiGo更新后删除
 func preProcessGroupSendingMessage(cli *client.QQClient, groupCode int64, m *message.SendingMessage) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	newElements := make([]message.IMessageElement, 0, len(m.Elements))
 	for _, element := range m.Elements {
 		if i, ok := element.(*message.TextElement); ok {

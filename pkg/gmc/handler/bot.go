@@ -120,7 +120,7 @@ func ListBot(c *gin.Context) {
 	bot.Clients.Range(func(_ int64, cli *client.QQClient) bool {
 		resp.BotList = append(resp.BotList, &dto.Bot{
 			BotId:    cli.Uin,
-			IsOnline: cli.Online,
+			IsOnline: cli.Online.Load(),
 			Captcha: func() *dto.Bot_Captcha {
 				if waitingCaptcha, ok := bot.WaitingCaptchas.Load(cli.Uin); ok {
 					return waitingCaptcha.Captcha
@@ -213,7 +213,7 @@ func QueryQRCodeStatus(c *gin.Context) {
 		return
 	}
 
-	if qrCodeBot.Online {
+	if qrCodeBot.Online.Load() {
 		c.String(http.StatusBadRequest, "already online")
 		return
 	}
@@ -321,7 +321,7 @@ func AfterLogin(cli *client.QQClient) {
 
 	for {
 		time.Sleep(5 * time.Second)
-		if cli.Online {
+		if cli.Online.Load() {
 			break
 		}
 		log.Warnf("机器人不在线，可能在等待输入验证码，或出错了。如果出错请重启。")

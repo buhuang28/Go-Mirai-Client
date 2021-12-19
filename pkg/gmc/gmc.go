@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/bot"
+	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -162,6 +163,12 @@ func CreateBotIfParamExist() {
 }
 
 func InitGin() {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 	router.Use(gin.Recovery())

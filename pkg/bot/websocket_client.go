@@ -45,6 +45,7 @@ func WSDailCall() {
 		}
 		WSClientHeader.Add("origin", WSClientOrigin)
 		WsCon, _, err = websocket.DefaultDialer.Dial(WSServerAddr, WSClientHeader)
+		fmt.Println("开始连接")
 		if err != nil || WsCon == nil {
 			log.Infof("ws连接出错:", err)
 		} else {

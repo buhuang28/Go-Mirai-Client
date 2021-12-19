@@ -38,6 +38,11 @@ func BuHuangSendGroupMsg(cli *client.QQClient, miraiMsg []message.IMessageElemen
 	}()
 	var record MessageRecord
 	ret := cli.SendGroupMessage(groupId, sendingMessage, false)
+	log.Info("发送消息返回id:", ret.Id, "返回InternalId:", ret.InternalId)
+	if ret.Id == -1 {
+		ret = cli.SendGroupMessage(groupId, sendingMessage, false)
+		log.Info("消息重发返回id:", ret.Id, "返回InternalId:", ret.InternalId)
+	}
 	record.EventId = ret.Id
 	record.InternalId = ret.InternalId
 	record.GroupCode = ret.GroupCode

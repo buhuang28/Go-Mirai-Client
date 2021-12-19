@@ -282,6 +282,12 @@ func CreateBotImpl(uin int64, password string, deviceRandSeed int64) {
 }
 
 func CreateBotImplMd5(uin int64, passwordMd5 [16]byte, deviceRandSeed int64) bool {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	log.Infof("开始初始化设备信息")
 	deviceInfo := device.GetDevice(uin)
 	if deviceRandSeed != 0 {
@@ -318,7 +324,12 @@ func CreateBotImplMd5(uin int64, passwordMd5 [16]byte, deviceRandSeed int64) boo
 }
 
 func AfterLogin(cli *client.QQClient) {
-
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	for {
 		time.Sleep(5 * time.Second)
 		if cli.Online.Load() {

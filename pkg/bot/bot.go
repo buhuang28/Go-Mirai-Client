@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
 	"runtime/debug"
 	"time"
 
@@ -35,6 +36,12 @@ func InitLog(cli *client.QQClient) {
 }
 
 func Login(cli *client.QQClient) (bool, error) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	cli.AllowSlider = true
 	rsp, err := cli.Login()
 	if err != nil {
@@ -49,6 +56,12 @@ func Login(cli *client.QQClient) (bool, error) {
 }
 
 func SetRelogin(cli *client.QQClient, retryInterval int, retryCount int) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	LoginTokens.Store(cli.Uin, cli.GenToken())
 	cli.OnDisconnected(func(bot *client.QQClient, e *client.ClientDisconnectedEvent) {
 		if bot.Online.Load() {
@@ -104,6 +117,12 @@ func SetRelogin(cli *client.QQClient, retryInterval int, retryCount int) {
 
 // ReleaseClient 断开连接并释放资源
 func ReleaseClient(cli *client.QQClient) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	BuhuangBotOffline(cli.Uin)
 	cli.Release()
 	Clients.Delete(cli.Uin) // 必须先删Clients，影响IsClientExist

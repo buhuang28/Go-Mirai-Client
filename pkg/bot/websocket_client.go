@@ -14,10 +14,10 @@ import (
 
 var (
 	WsCon          *websocket.Conn
+	WsConSucess    bool = false
 	WSWLock        sync.Mutex
 	WSRLock        sync.Mutex
-	ConSucess      bool = false
-	ConLock        sync.Mutex
+	WSCallLock     sync.Mutex
 	WSClientHeader http.Header = make(map[string][]string)
 	BotClientMap               = make(map[int64]*client.QQClient)
 	BotClientLock  sync.Mutex
@@ -33,32 +33,29 @@ func WSDailCall() {
 		e := recover()
 		if e != nil {
 			ws_data.PrintStackTrace(e)
-			ConLock.Lock()
-			ConSucess = false
-			WsCon = nil
-			ConLock.Unlock()
 			go WSDailCall()
 			return
 		}
+		WSCallLock.Unlock()
 	}()
+	WSCallLock.Lock()
+	var tempHeader http.Header = make(map[string][]string)
+	tempHeader.Add("origin", WSClientOrigin)
+	WSClientHeader = tempHeader
 	var err error
 	for {
-		ConLock.Lock()
-		if ConSucess {
-			ConLock.Unlock()
-			log.Info("WS链接为断开状态")
-			break
-		} else {
-			ConLock.Unlock()
+		if WsCon != nil && WsConSucess {
+			return
 		}
-		WSClientHeader.Add("origin", WSClientOrigin)
-		ConLock.Lock()
 		fmt.Println("开始连接")
 		WsCon, _, err = websocket.DefaultDialer.Dial(WSServerAddr, WSClientHeader)
-		ConLock.Unlock()
+		fmt.Println(WsCon)
 		if err != nil || WsCon == nil {
 			log.Infof("ws连接出错:", err)
+			time.Sleep(time.Second * 2)
+			continue
 		} else {
+			WsConSucess = true
 			Clients.Range(func(_ int64, cli *client.QQClient) bool {
 				if cli.Online.Load() {
 					fmt.Println(cli.Uin, "发送上线事件")
@@ -66,12 +63,8 @@ func WSDailCall() {
 				}
 				return true
 			})
-			ConLock.Lock()
-			ConSucess = true
-			ConLock.Unlock()
 			return
 		}
-		time.Sleep(time.Second * 2)
 	}
 }
 
@@ -85,9 +78,7 @@ func HandleWSMsg() {
 		go HandleWSMsg()
 	}()
 	for {
-		ConLock.Lock()
-		if WsCon == nil || !ConSucess {
-			ConLock.Unlock()
+		if WsCon == nil && !WsConSucess {
 			time.Sleep(time.Second)
 			continue
 		}
@@ -95,14 +86,11 @@ func HandleWSMsg() {
 		_, message, e := WsCon.ReadMessage()
 		WSRLock.Unlock()
 		log.Println("收到消息:", string(message))
-		if e != nil {
+		if e != nil || WsCon == nil {
 			log.Println("出错了：", e)
 			time.Sleep(time.Second * 2)
+			WsConSucess = false
 			go func() {
-				ConLock.Lock()
-				WsCon = nil
-				ConSucess = false
-				ConLock.Unlock()
 				log.Println("ws-server掉线，正在重连")
 				WSDailCall()
 			}()

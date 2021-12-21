@@ -165,7 +165,7 @@ func AddMemberPermissionChangedPlugin(plugin MemberPermissionChangedPlugin) {
 
 //私聊消息
 func handlePrivateMessage(cli *client.QQClient, event *message.PrivateMessage) {
-	if bot.WsCon == nil || !bot.ConSucess {
+	if bot.WsCon == nil {
 		return
 	}
 	util.SafeGo(func() {
@@ -190,7 +190,7 @@ func handlePrivateMessage(cli *client.QQClient, event *message.PrivateMessage) {
 
 //群消息
 func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
-	if bot.WsCon == nil || !bot.ConSucess {
+	if bot.WsCon == nil {
 		log.Infof("WS链接爆炸")
 		return
 	}
@@ -220,7 +220,7 @@ func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
 
 //临时消息
 func handleTempMessage(cli *client.QQClient, event *client.TempMessageEvent) {
-	if bot.WsCon == nil || !bot.ConSucess {
+	if bot.WsCon == nil {
 		return
 	}
 	util.SafeGo(func() {
@@ -245,7 +245,7 @@ func handleTempMessage(cli *client.QQClient, event *client.TempMessageEvent) {
 
 //有人入群
 func handleMemberJoinGroup(cli *client.QQClient, event *client.MemberJoinGroupEvent) {
-	if bot.WsCon == nil || !bot.ConSucess {
+	if bot.WsCon == nil {
 		return
 	}
 	util.SafeGo(func() {
@@ -270,7 +270,7 @@ func handleMemberJoinGroup(cli *client.QQClient, event *client.MemberJoinGroupEv
 
 //有人离开
 func handleMemberLeaveGroup(cli *client.QQClient, event *client.MemberLeaveGroupEvent) {
-	if bot.WsCon == nil || !bot.ConSucess {
+	if bot.WsCon == nil {
 		return
 	}
 	util.SafeGo(func() {
@@ -294,7 +294,7 @@ func handleMemberLeaveGroup(cli *client.QQClient, event *client.MemberLeaveGroup
 
 //有人申请入群
 func handleUserJoinGroupRequest(cli *client.QQClient, event *client.UserJoinGroupRequest) {
-	if bot.WsCon == nil || !bot.ConSucess {
+	if bot.WsCon == nil {
 		return
 	}
 	util.SafeGo(func() {
@@ -333,7 +333,7 @@ func handleUserJoinGroupRequest(cli *client.QQClient, event *client.UserJoinGrou
 
 //机器人被邀请入群
 func handleGroupInvitedRequest(cli *client.QQClient, event *client.GroupInvitedRequest) {
-	if bot.WsCon == nil || !bot.ConSucess {
+	if bot.WsCon == nil {
 		return
 	}
 	util.SafeGo(func() {

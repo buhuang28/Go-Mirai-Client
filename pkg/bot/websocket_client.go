@@ -16,7 +16,8 @@ var (
 	WsCon          *websocket.Conn
 	WSWLock        sync.Mutex
 	WSRLock        sync.Mutex
-	ConSucess      bool        = false
+	ConSucess      bool = false
+	ConLock        sync.Mutex
 	WSClientHeader http.Header = make(map[string][]string)
 	BotClientMap               = make(map[int64]*client.QQClient)
 	BotClientLock  sync.Mutex
@@ -32,20 +33,29 @@ func WSDailCall() {
 		e := recover()
 		if e != nil {
 			ws_data.PrintStackTrace(e)
+			ConLock.Lock()
 			ConSucess = false
 			WsCon = nil
+			ConLock.Unlock()
 			go WSDailCall()
 			return
 		}
 	}()
 	var err error
 	for {
+		ConLock.Lock()
 		if ConSucess {
+			ConLock.Unlock()
+			log.Info("WS链接为断开状态")
 			break
+		} else {
+			ConLock.Unlock()
 		}
 		WSClientHeader.Add("origin", WSClientOrigin)
-		WsCon, _, err = websocket.DefaultDialer.Dial(WSServerAddr, WSClientHeader)
+		ConLock.Lock()
 		fmt.Println("开始连接")
+		WsCon, _, err = websocket.DefaultDialer.Dial(WSServerAddr, WSClientHeader)
+		ConLock.Unlock()
 		if err != nil || WsCon == nil {
 			log.Infof("ws连接出错:", err)
 		} else {
@@ -56,7 +66,9 @@ func WSDailCall() {
 				}
 				return true
 			})
+			ConLock.Lock()
 			ConSucess = true
+			ConLock.Unlock()
 			return
 		}
 		time.Sleep(time.Second * 2)
@@ -70,9 +82,12 @@ func HandleWSMsg() {
 		if e != nil {
 			ws_data.PrintStackTrace(e)
 		}
+		go HandleWSMsg()
 	}()
 	for {
+		ConLock.Lock()
 		if WsCon == nil || !ConSucess {
+			ConLock.Unlock()
 			time.Sleep(time.Second)
 			continue
 		}
@@ -84,7 +99,10 @@ func HandleWSMsg() {
 			log.Println("出错了：", e)
 			time.Sleep(time.Second * 2)
 			go func() {
+				ConLock.Lock()
+				WsCon = nil
 				ConSucess = false
+				ConLock.Unlock()
 				log.Println("ws-server掉线，正在重连")
 				WSDailCall()
 			}()
@@ -95,7 +113,6 @@ func HandleWSMsg() {
 		BotClientLock.Lock()
 		cli := BotClientMap[data.BotId]
 		BotClientLock.Unlock()
-
 		miraiMsg := RawMsgToMiraiMsg(cli, data.Message)
 		switch data.MsgType {
 		case ws_data.GMC_PRIVATE_MESSAGE, ws_data.GMC_TEMP_MESSAGE:

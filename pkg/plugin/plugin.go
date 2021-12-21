@@ -8,6 +8,7 @@ import (
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/util"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
 	"github.com/gorilla/websocket"
+	log "github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -190,9 +191,9 @@ func handlePrivateMessage(cli *client.QQClient, event *message.PrivateMessage) {
 //群消息
 func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
 	if bot.WsCon == nil || !bot.ConSucess {
+		log.Infof("WS链接爆炸")
 		return
 	}
-
 	util.SafeGo(func() {
 		cli.MarkGroupMessageReaded(event.GroupCode, int64(event.Id))
 		var data ws_data.GMCWSData
@@ -212,6 +213,7 @@ func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
 		}()
 		data.Message = bot.MiraiMsgToRawMsg2(cli, event.GroupCode, event.Elements)
 		marshal, _ := json.Marshal(data)
+		log.Info("收到", event.GroupCode, "群消息:", data.Message)
 		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
 	})
 }

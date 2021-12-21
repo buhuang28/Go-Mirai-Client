@@ -9,6 +9,9 @@ import (
 )
 
 func HandleGetAllMember(cli *client.QQClient) {
+	if WsCon == nil {
+		log.Info("HandleGetAllMember-WsCon链接为null")
+	}
 	var data ws_data.GMCWSData
 	data.BotId = cli.Uin
 	data.MsgType = ws_data.GMC_ALLGROUPMEMBER
@@ -26,6 +29,9 @@ func HandleGetAllMember(cli *client.QQClient) {
 }
 
 func HandleGroupList(cli *client.QQClient) {
+	if WsCon == nil {
+		log.Info("HandleGroupList-WsCon链接为null")
+	}
 	var data ws_data.GMCWSData
 	data.BotId = cli.Uin
 	data.MsgType = ws_data.GMC_GROUP_LIST

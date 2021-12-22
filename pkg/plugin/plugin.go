@@ -83,237 +83,259 @@ func Serve(cli *client.QQClient) {
 	//cli.OnGroupMemberPermissionChanged(handleMemberPermissionChanged)
 }
 
-// 添加私聊消息插件
-func AddPrivateMessagePlugin(plugin PrivateMessagePlugin) {
-	PrivateMessagePluginList = append(PrivateMessagePluginList, plugin)
-}
-
-// 添加群聊消息插件
-func AddGroupMessagePlugin(plugin GroupMessagePlugin) {
-	GroupMessagePluginList = append(GroupMessagePluginList, plugin)
-}
-
-// 添加临时消息插件
-func AddTempMessagePlugin(plugin TempMessagePlugin) {
-	TempMessagePluginList = append(TempMessagePluginList, plugin)
-}
-
-// 添加群成员加入插件
-func AddMemberJoinGroupPlugin(plugin MemberJoinGroupPlugin) {
-	MemberJoinGroupPluginList = append(MemberJoinGroupPluginList, plugin)
-}
-
-// 添加群成员离开插件
-func AddMemberLeaveGroupPlugin(plugin MemberLeaveGroupPlugin) {
-	MemberLeaveGroupPluginList = append(MemberLeaveGroupPluginList, plugin)
-}
-
-// 添加机器人进群插件
-func AddJoinGroupPlugin(plugin JoinGroupPlugin) {
-	JoinGroupPluginList = append(JoinGroupPluginList, plugin)
-}
-
-// 添加机器人离开群插件
-func AddLeaveGroupPlugin(plugin LeaveGroupPlugin) {
-	LeaveGroupPluginList = append(LeaveGroupPluginList, plugin)
-}
-
-// 添加好友请求处理插件
-func AddNewFriendRequestPlugin(plugin NewFriendRequestPlugin) {
-	NewFriendRequestPluginList = append(NewFriendRequestPluginList, plugin)
-}
-
-// 添加加群请求处理插件
-func AddUserJoinGroupRequestPlugin(plugin UserJoinGroupRequestPlugin) {
-	UserJoinGroupRequestPluginList = append(UserJoinGroupRequestPluginList, plugin)
-}
-
-// 添加机器人被邀请处理插件
-func AddGroupInvitedRequestPlugin(plugin GroupInvitedRequestPlugin) {
-	GroupInvitedRequestPluginList = append(GroupInvitedRequestPluginList, plugin)
-}
-
-// 添加群消息撤回处理插件
-func AddGroupMessageRecalledPlugin(plugin GroupMessageRecalledPlugin) {
-	GroupMessageRecalledPluginList = append(GroupMessageRecalledPluginList, plugin)
-}
-
-// 添加好友消息撤回处理插件
-func AddFriendMessageRecalledPlugin(plugin FriendMessageRecalledPlugin) {
-	FriendMessageRecalledPluginList = append(FriendMessageRecalledPluginList, plugin)
-}
-
-// 添加好友添加处理插件
-func AddNewFriendAddedPlugin(plugin NewFriendAddedPlugin) {
-	NewFriendAddedPluginList = append(NewFriendAddedPluginList, plugin)
-}
-
-// 添加离线文件处理插件
-func AddOfflineFilePlugin(plugin OfflineFilePlugin) {
-	OfflineFilePluginList = append(OfflineFilePluginList, plugin)
-}
-
-// 添加群成员被禁言插件
-func AddGroupMutePlugin(plugin GroupMutePlugin) {
-	GroupMutePluginList = append(GroupMutePluginList, plugin)
-}
-
-// 添加群成员权限变动插件
-func AddMemberPermissionChangedPlugin(plugin MemberPermissionChangedPlugin) {
-	MemberPermissionChangedPluginList = append(MemberPermissionChangedPluginList, plugin)
-}
+//// 添加私聊消息插件
+//func AddPrivateMessagePlugin(plugin PrivateMessagePlugin) {
+//	PrivateMessagePluginList = append(PrivateMessagePluginList, plugin)
+//}
+//
+//// 添加群聊消息插件
+//func AddGroupMessagePlugin(plugin GroupMessagePlugin) {
+//	GroupMessagePluginList = append(GroupMessagePluginList, plugin)
+//}
+//
+//// 添加临时消息插件
+//func AddTempMessagePlugin(plugin TempMessagePlugin) {
+//	TempMessagePluginList = append(TempMessagePluginList, plugin)
+//}
+//
+//// 添加群成员加入插件
+//func AddMemberJoinGroupPlugin(plugin MemberJoinGroupPlugin) {
+//	MemberJoinGroupPluginList = append(MemberJoinGroupPluginList, plugin)
+//}
+//
+//// 添加群成员离开插件
+//func AddMemberLeaveGroupPlugin(plugin MemberLeaveGroupPlugin) {
+//	MemberLeaveGroupPluginList = append(MemberLeaveGroupPluginList, plugin)
+//}
+//
+//// 添加机器人进群插件
+//func AddJoinGroupPlugin(plugin JoinGroupPlugin) {
+//	JoinGroupPluginList = append(JoinGroupPluginList, plugin)
+//}
+//
+//// 添加机器人离开群插件
+//func AddLeaveGroupPlugin(plugin LeaveGroupPlugin) {
+//	LeaveGroupPluginList = append(LeaveGroupPluginList, plugin)
+//}
+//
+//// 添加好友请求处理插件
+//func AddNewFriendRequestPlugin(plugin NewFriendRequestPlugin) {
+//	NewFriendRequestPluginList = append(NewFriendRequestPluginList, plugin)
+//}
+//
+//// 添加加群请求处理插件
+//func AddUserJoinGroupRequestPlugin(plugin UserJoinGroupRequestPlugin) {
+//	UserJoinGroupRequestPluginList = append(UserJoinGroupRequestPluginList, plugin)
+//}
+//
+//// 添加机器人被邀请处理插件
+//func AddGroupInvitedRequestPlugin(plugin GroupInvitedRequestPlugin) {
+//	GroupInvitedRequestPluginList = append(GroupInvitedRequestPluginList, plugin)
+//}
+//
+//// 添加群消息撤回处理插件
+//func AddGroupMessageRecalledPlugin(plugin GroupMessageRecalledPlugin) {
+//	GroupMessageRecalledPluginList = append(GroupMessageRecalledPluginList, plugin)
+//}
+//
+//// 添加好友消息撤回处理插件
+//func AddFriendMessageRecalledPlugin(plugin FriendMessageRecalledPlugin) {
+//	FriendMessageRecalledPluginList = append(FriendMessageRecalledPluginList, plugin)
+//}
+//
+//// 添加好友添加处理插件
+//func AddNewFriendAddedPlugin(plugin NewFriendAddedPlugin) {
+//	NewFriendAddedPluginList = append(NewFriendAddedPluginList, plugin)
+//}
+//
+//// 添加离线文件处理插件
+//func AddOfflineFilePlugin(plugin OfflineFilePlugin) {
+//	OfflineFilePluginList = append(OfflineFilePluginList, plugin)
+//}
+//
+//// 添加群成员被禁言插件
+//func AddGroupMutePlugin(plugin GroupMutePlugin) {
+//	GroupMutePluginList = append(GroupMutePluginList, plugin)
+//}
+//
+//// 添加群成员权限变动插件
+//func AddMemberPermissionChangedPlugin(plugin MemberPermissionChangedPlugin) {
+//	MemberPermissionChangedPluginList = append(MemberPermissionChangedPluginList, plugin)
+//}
 
 //私聊消息
 func handlePrivateMessage(cli *client.QQClient, event *message.PrivateMessage) {
+	bot.WSWLock.Lock()
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+		bot.WSWLock.Unlock()
+	}()
+	msg := bot.MiraiMsgToRawMsg(cli, event.Elements)
+	log.Info("收到", event.Sender.Uin, "私聊消息:", msg)
 	if bot.WsCon == nil {
 		return
 	}
-	util.SafeGo(func() {
-		cli.MarkPrivateMessageReaded(event.Sender.Uin, int64(event.Time))
-		var data ws_data.GMCWSData
-		data.BotId = cli.Uin
-		data.UserId = event.Sender.Uin
-		data.MsgType = ws_data.GMC_PRIVATE_MESSAGE
-		bot.WSWLock.Lock()
-		defer func() {
-			e := recover()
-			if e != nil {
-				ws_data.PrintStackTrace(e)
-			}
-			bot.WSWLock.Unlock()
-		}()
-		data.Message = bot.MiraiMsgToRawMsg(cli, event.Elements)
-		marshal, _ := json.Marshal(data)
-		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-	})
+	cli.MarkPrivateMessageReaded(event.Sender.Uin, int64(event.Time))
+	var data ws_data.GMCWSData
+	data.BotId = cli.Uin
+	data.UserId = event.Sender.Uin
+	data.MsgType = ws_data.GMC_PRIVATE_MESSAGE
+	data.Message = msg
+	marshal, _ := json.Marshal(data)
+	err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+	if err != nil {
+		log.Info("handlePrivateMessage出错", err)
+	}
 }
 
 //群消息
 func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
+	bot.WSWLock.Lock()
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+		bot.WSWLock.Unlock()
+	}()
+	msg := bot.MiraiMsgToRawMsg2(cli, event.GroupCode, event.Elements)
+	log.Info("收到", event.GroupCode, "群消息:", msg)
 	if bot.WsCon == nil {
 		log.Infof("WS链接爆炸")
 		return
 	}
-	util.SafeGo(func() {
-		cli.MarkGroupMessageReaded(event.GroupCode, int64(event.Id))
-		var data ws_data.GMCWSData
-		data.BotId = cli.Uin
-		data.GroupId = event.GroupCode
-		data.UserId = event.Sender.Uin
-		data.MsgType = ws_data.GMC_GROUP_MESSAGE
-		data.MessageId = int64(event.Id)
-		data.InternalId = event.InternalId
-		bot.WSWLock.Lock()
-		defer func() {
-			e := recover()
-			if e != nil {
-				ws_data.PrintStackTrace(e)
-			}
-			bot.WSWLock.Unlock()
-		}()
-		data.Message = bot.MiraiMsgToRawMsg2(cli, event.GroupCode, event.Elements)
-		marshal, _ := json.Marshal(data)
-		log.Info("收到", event.GroupCode, "群消息:", data.Message)
-		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-	})
+	cli.MarkGroupMessageReaded(event.GroupCode, int64(event.Id))
+	var data ws_data.GMCWSData
+	data.BotId = cli.Uin
+	data.GroupId = event.GroupCode
+	data.UserId = event.Sender.Uin
+	data.MsgType = ws_data.GMC_GROUP_MESSAGE
+	data.MessageId = int64(event.Id)
+	data.InternalId = event.InternalId
+	data.Message = msg
+	marshal, _ := json.Marshal(data)
+	e := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+	if e != nil {
+		log.Info("handleGroupMessage错误:", e)
+	}
 }
 
 //临时消息
 func handleTempMessage(cli *client.QQClient, event *client.TempMessageEvent) {
+	bot.WSWLock.Lock()
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+		bot.WSWLock.Unlock()
+	}()
+	msg := bot.MiraiMsgToRawMsg(cli, event.Message.Elements)
+	log.Info("收到", event.Message.GroupCode, "群,", event.Message.Sender.Uin, "的临时私聊消息:", msg)
 	if bot.WsCon == nil {
 		return
 	}
-	util.SafeGo(func() {
-		var data ws_data.GMCWSData
-		data.BotId = cli.Uin
-		data.GroupId = event.Message.GroupCode
-		data.UserId = event.Message.Sender.Uin
-		data.MsgType = ws_data.GMC_TEMP_MESSAGE
-		bot.WSWLock.Lock()
-		defer func() {
-			e := recover()
-			if e != nil {
-				ws_data.PrintStackTrace(e)
-			}
-			bot.WSWLock.Unlock()
-		}()
-		data.Message = bot.MiraiMsgToRawMsg(cli, event.Message.Elements)
-		marshal, _ := json.Marshal(data)
-		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-	})
+	var data ws_data.GMCWSData
+	data.BotId = cli.Uin
+	data.GroupId = event.Message.GroupCode
+	data.UserId = event.Message.Sender.Uin
+	data.MsgType = ws_data.GMC_TEMP_MESSAGE
+	data.Message = msg
+	marshal, _ := json.Marshal(data)
+	err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+	if err != nil {
+		log.Info("handleTempMessage出错:", err)
+	}
 }
 
 //有人入群
 func handleMemberJoinGroup(cli *client.QQClient, event *client.MemberJoinGroupEvent) {
+	bot.WSWLock.Lock()
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+		bot.WSWLock.Unlock()
+	}()
+	log.Info("收到入群信息")
 	if bot.WsCon == nil {
 		return
 	}
-	util.SafeGo(func() {
-		var data ws_data.GMCWSData
-		data.GroupId = event.Group.Code
-		data.UserId = event.Member.Uin
-		data.NickName = event.Member.Nickname
-		data.BotId = cli.Uin
-		data.MsgType = ws_data.GMC_MEMBER_ADD
-		marshal, _ := json.Marshal(data)
-		bot.WSWLock.Lock()
-		defer func() {
-			e := recover()
-			if e != nil {
-				ws_data.PrintStackTrace(e)
-			}
-			bot.WSWLock.Unlock()
-		}()
-		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-	})
+	var data ws_data.GMCWSData
+	data.GroupId = event.Group.Code
+	data.UserId = event.Member.Uin
+	data.NickName = event.Member.Nickname
+	data.BotId = cli.Uin
+	data.MsgType = ws_data.GMC_MEMBER_ADD
+	marshal, _ := json.Marshal(data)
+	err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+	if err != nil {
+		log.Info("handleMemberJoinGroup出错", err)
+	}
 }
 
 //有人离开
 func handleMemberLeaveGroup(cli *client.QQClient, event *client.MemberLeaveGroupEvent) {
+	bot.WSWLock.Lock()
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+		bot.WSWLock.Unlock()
+	}()
+	log.Info("收到有人退群")
 	if bot.WsCon == nil {
 		return
 	}
-	util.SafeGo(func() {
-		var data ws_data.GMCWSData
-		data.GroupId = event.Group.Code
-		data.UserId = event.Member.Uin
-		data.BotId = cli.Uin
-		data.MsgType = ws_data.GMC_MEMBER_LEAVE
-		marshal, _ := json.Marshal(data)
-		bot.WSWLock.Lock()
-		defer func() {
-			e := recover()
-			if e != nil {
-				ws_data.PrintStackTrace(e)
-			}
-			bot.WSWLock.Unlock()
-		}()
-		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-	})
+	var data ws_data.GMCWSData
+	data.GroupId = event.Group.Code
+	data.UserId = event.Member.Uin
+	data.BotId = cli.Uin
+	data.MsgType = ws_data.GMC_MEMBER_LEAVE
+	marshal, _ := json.Marshal(data)
+	err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+	if err != nil {
+		log.Info("handleMemberLeaveGroup出错", err)
+	}
 }
 
 //有人申请入群
 func handleUserJoinGroupRequest(cli *client.QQClient, event *client.UserJoinGroupRequest) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
+	log.Info("有人申请入群")
 	if bot.WsCon == nil {
 		return
 	}
-	util.SafeGo(func() {
-		var data ws_data.GMCWSData
-		data.MsgType = ws_data.GMC_GROUP_REQUEST
-		data.BotId = cli.Uin
-		data.GroupId = event.GroupCode
-		data.UserId = event.RequesterUin
-		data.NickName = event.RequesterNick
-		data.RequestId = event.RequestId
-		data.Message = event.Message
-		marshal, _ := json.Marshal(data)
-		bot.WSWLock.Lock()
-		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-		bot.WSWLock.Unlock()
-		ch := make(chan ws_data.GMCWSData, 1)
-		ws_data.ChanMapLock.Lock()
-		ws_data.ChanMap[event.RequestId] = ch
-		ws_data.ChanMapLock.Unlock()
+	var data ws_data.GMCWSData
+	data.MsgType = ws_data.GMC_GROUP_REQUEST
+	data.BotId = cli.Uin
+	data.GroupId = event.GroupCode
+	data.UserId = event.RequesterUin
+	data.NickName = event.RequesterNick
+	data.RequestId = event.RequestId
+	data.Message = event.Message
+	marshal, _ := json.Marshal(data)
+	bot.WSWLock.Lock()
+	err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+	if err != nil {
+		log.Info("handleUserJoinGroupRequest出错", err)
+	}
+	bot.WSWLock.Unlock()
+	ch := make(chan ws_data.GMCWSData, 1)
+	ws_data.ChanMapLock.Lock()
+	ws_data.ChanMap[event.RequestId] = ch
+	ws_data.ChanMapLock.Unlock()
+	go func() {
 		select {
 		case r := <-ch:
 			switch r.GroupRequest {
@@ -323,35 +345,43 @@ func handleUserJoinGroupRequest(cli *client.QQClient, event *client.UserJoinGrou
 				event.Reject(false, "")
 			}
 		case <-time.After(time.Second * 30):
-			ws_data.ChanMapLock.Lock()
 			delete(ws_data.ChanMap, event.RequestId)
-			ws_data.ChanMapLock.Unlock()
 			return
 		}
-	})
+	}()
 }
 
 //机器人被邀请入群
 func handleGroupInvitedRequest(cli *client.QQClient, event *client.GroupInvitedRequest) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
+	log.Info("收到机器人被邀请入群")
 	if bot.WsCon == nil {
 		return
 	}
-	util.SafeGo(func() {
-		var data ws_data.GMCWSData
-		data.MsgType = ws_data.GMC_BOT_INVITED
-		data.BotId = cli.Uin
-		data.GroupId = event.GroupCode
-		data.NickName = event.InvitorNick
-		data.InvitorId = event.InvitorUin
-		data.RequestId = event.RequestId
-		marshal, _ := json.Marshal(data)
-		bot.WSWLock.Lock()
-		bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-		bot.WSWLock.Unlock()
-		ch := make(chan ws_data.GMCWSData, 1)
-		ws_data.ChanMapLock.Lock()
-		ws_data.ChanMap[event.RequestId] = ch
-		ws_data.ChanMapLock.Unlock()
+	var data ws_data.GMCWSData
+	data.MsgType = ws_data.GMC_BOT_INVITED
+	data.BotId = cli.Uin
+	data.GroupId = event.GroupCode
+	data.NickName = event.InvitorNick
+	data.InvitorId = event.InvitorUin
+	data.RequestId = event.RequestId
+	marshal, _ := json.Marshal(data)
+	bot.WSWLock.Lock()
+	err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+	if err != nil {
+		log.Info("handleGroupInvitedRequest出错", err)
+	}
+	bot.WSWLock.Unlock()
+	ch := make(chan ws_data.GMCWSData, 1)
+	ws_data.ChanMapLock.Lock()
+	ws_data.ChanMap[event.RequestId] = ch
+	ws_data.ChanMapLock.Unlock()
+	go func() {
 		select {
 		case r := <-ch:
 			switch r.GroupRequest {
@@ -362,12 +392,10 @@ func handleGroupInvitedRequest(cli *client.QQClient, event *client.GroupInvitedR
 			}
 			return
 		case <-time.After(time.Second * 30):
-			ws_data.ChanMapLock.Lock()
 			delete(ws_data.ChanMap, event.RequestId)
-			ws_data.ChanMapLock.Unlock()
 			return
 		}
-	})
+	}()
 }
 
 //机器人退群

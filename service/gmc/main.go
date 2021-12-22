@@ -6,7 +6,6 @@ import (
 )
 
 func main() {
-
 	defer func() {
 		e := recover()
 		if e != nil {

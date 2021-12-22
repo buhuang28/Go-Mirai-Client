@@ -33,8 +33,11 @@ func WSDailCall() {
 		e := recover()
 		if e != nil {
 			ws_data.PrintStackTrace(e)
-			go WSDailCall()
-			return
+			go func() {
+				log.Info("WsCon:", WsCon)
+				log.Info("WsConSucess:", WsConSucess)
+				WSDailCall()
+			}()
 		}
 		WSCallLock.Unlock()
 	}()
@@ -75,7 +78,11 @@ func HandleWSMsg() {
 		if e != nil {
 			ws_data.PrintStackTrace(e)
 		}
-		go HandleWSMsg()
+		go func() {
+			log.Info("WsCon:", WsCon)
+			log.Info("WsConSucess:", WsConSucess)
+			HandleWSMsg()
+		}()
 	}()
 	for {
 		if WsCon == nil && !WsConSucess {
@@ -85,7 +92,7 @@ func HandleWSMsg() {
 		WSRLock.Lock()
 		_, message, e := WsCon.ReadMessage()
 		WSRLock.Unlock()
-		log.Println("收到消息:", string(message))
+		log.Println("收到server消息:", string(message))
 		if e != nil || WsCon == nil {
 			log.Println("出错了：", e)
 			time.Sleep(time.Second * 2)

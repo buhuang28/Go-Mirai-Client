@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
+	"os"
 
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/config"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/gmc"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/util"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/zserge/lorca"
 )
 
@@ -25,7 +25,28 @@ func main() {
 		util.FatalError(err)
 		return
 	}
-	defer ui.Close()
+	//defer func() {
+	//	err2 := ui.Close()
+	//	if err2 != nil {
+	//		ws_data.PrintStackTrace(err2)
+	//		WriteFile("err21.txt",err2.Error())
+	//	}
+	//	//lorca
+	//}()
 	<-ui.Done()
-	log.Info("UI exit.")
+	//log.Info("UI exit.")
+	//select {
+	//
+	//}
+}
+
+func WriteFile(fileName, content string) bool {
+	fd, _ := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	buf := []byte(content)
+	_, err := fd.Write(buf)
+	fd.Close()
+	if err == nil {
+		return true
+	}
+	return false
 }

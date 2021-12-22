@@ -171,7 +171,7 @@ func InitGin() {
 	}()
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
-	router.Use(gin.Recovery())
+	//router.Use(gin.Recovery())
 	if len(config.HttpAuth) > 0 {
 		router.Use(gin.BasicAuth(config.HttpAuth))
 	}
@@ -184,6 +184,7 @@ func InitGin() {
 	router.POST("/captcha/solve/v1", handler.SolveCaptcha)
 	router.POST("/qrcode/fetch/v1", handler.FetchQrCode)
 	router.POST("/qrcode/query/v1", handler.QueryQRCodeStatus)
+
 	realPort, err := RunGin(router, ":"+config.Port)
 	if err != nil {
 		util.FatalError(fmt.Errorf("failed to run gin, err: %+v", err))
@@ -194,6 +195,12 @@ func InitGin() {
 }
 
 func RunGin(engine *gin.Engine, port string) (string, error) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	ln, err := net.Listen("tcp", port)
 	if err != nil {
 		return "", err

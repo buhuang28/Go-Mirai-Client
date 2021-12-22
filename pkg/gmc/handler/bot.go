@@ -12,7 +12,6 @@ import (
 
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/bot"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/device"
-	"github.com/ProtobufBot/Go-Mirai-Client/pkg/gmc/plugins"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/plugin"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/util"
 	"github.com/ProtobufBot/Go-Mirai-Client/proto_gen/dto"
@@ -30,29 +29,29 @@ var qrCodeBot *client.QQClient
 //注册事件
 func init() {
 	//log.Infof("加载日志插件 Log")
-	plugin.AddPrivateMessagePlugin(plugins.LogPrivateMessage)
-	plugin.AddGroupMessagePlugin(plugins.LogGroupMessage)
-
-	//log.Infof("加载测试插件 Hello")
-	plugin.AddPrivateMessagePlugin(plugins.HelloPrivateMessage)
-
-	//log.Infof("加载上报插件 Report")
-	plugin.AddPrivateMessagePlugin(plugins.ReportPrivateMessage)
-	plugin.AddGroupMessagePlugin(plugins.ReportGroupMessage)
-	plugin.AddTempMessagePlugin(plugins.ReportTempMessage)
-	plugin.AddMemberPermissionChangedPlugin(plugins.ReportMemberPermissionChanged)
-	plugin.AddMemberJoinGroupPlugin(plugins.ReportMemberJoin)
-	plugin.AddMemberLeaveGroupPlugin(plugins.ReportMemberLeave)
-	plugin.AddJoinGroupPlugin(plugins.ReportJoinGroup)
-	plugin.AddLeaveGroupPlugin(plugins.ReportLeaveGroup)
-	plugin.AddNewFriendRequestPlugin(plugins.ReportNewFriendRequest)
-	plugin.AddUserJoinGroupRequestPlugin(plugins.ReportUserJoinGroupRequest)
-	plugin.AddGroupInvitedRequestPlugin(plugins.ReportGroupInvitedRequest)
-	plugin.AddGroupMessageRecalledPlugin(plugins.ReportGroupMessageRecalled)
-	plugin.AddFriendMessageRecalledPlugin(plugins.ReportFriendMessageRecalled)
-	plugin.AddNewFriendAddedPlugin(plugins.ReportNewFriendAdded)
-	plugin.AddOfflineFilePlugin(plugins.ReportOfflineFile)
-	plugin.AddGroupMutePlugin(plugins.ReportGroupMute)
+	//plugin.AddPrivateMessagePlugin(plugins.LogPrivateMessage)
+	//plugin.AddGroupMessagePlugin(plugins.LogGroupMessage)
+	//
+	////log.Infof("加载测试插件 Hello")
+	//plugin.AddPrivateMessagePlugin(plugins.HelloPrivateMessage)
+	//
+	////log.Infof("加载上报插件 Report")
+	//plugin.AddPrivateMessagePlugin(plugins.ReportPrivateMessage)
+	//plugin.AddGroupMessagePlugin(plugins.ReportGroupMessage)
+	//plugin.AddTempMessagePlugin(plugins.ReportTempMessage)
+	//plugin.AddMemberPermissionChangedPlugin(plugins.ReportMemberPermissionChanged)
+	//plugin.AddMemberJoinGroupPlugin(plugins.ReportMemberJoin)
+	//plugin.AddMemberLeaveGroupPlugin(plugins.ReportMemberLeave)
+	//plugin.AddJoinGroupPlugin(plugins.ReportJoinGroup)
+	//plugin.AddLeaveGroupPlugin(plugins.ReportLeaveGroup)
+	//plugin.AddNewFriendRequestPlugin(plugins.ReportNewFriendRequest)
+	//plugin.AddUserJoinGroupRequestPlugin(plugins.ReportUserJoinGroupRequest)
+	//plugin.AddGroupInvitedRequestPlugin(plugins.ReportGroupInvitedRequest)
+	//plugin.AddGroupMessageRecalledPlugin(plugins.ReportGroupMessageRecalled)
+	//plugin.AddFriendMessageRecalledPlugin(plugins.ReportFriendMessageRecalled)
+	//plugin.AddNewFriendAddedPlugin(plugins.ReportNewFriendAdded)
+	//plugin.AddOfflineFilePlugin(plugins.ReportOfflineFile)
+	//plugin.AddGroupMutePlugin(plugins.ReportGroupMute)
 }
 
 func CreateBot(c *gin.Context) {
@@ -140,10 +139,13 @@ func ListBot(c *gin.Context) {
 }
 
 func SolveCaptcha(c *gin.Context) {
-	e := recover()
-	if e != nil {
-		ws_data.PrintStackTrace(e)
-	}
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
+
 	req := &dto.SolveCaptchaReq{}
 	err := c.Bind(req)
 	if err != nil {

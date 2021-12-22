@@ -5,6 +5,7 @@ import (
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/clz"
+	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
 	"html"
 )
 
@@ -44,6 +45,12 @@ func MiraiMsgToRawMsg(cli *client.QQClient, messageChain []message.IMessageEleme
 }
 
 func MiraiMsgToRawMsg2(cli *client.QQClient, fromGroup int64, messageChain []message.IMessageElement) string {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	result := ""
 	for _, element := range messageChain {
 		switch elem := element.(type) {

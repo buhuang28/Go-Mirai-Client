@@ -52,7 +52,6 @@ func WSDailCall() {
 		}
 		fmt.Println("开始连接")
 		WsCon, _, err = websocket.DefaultDialer.Dial(WSServerAddr, WSClientHeader)
-		fmt.Println(WsCon)
 		if err != nil || WsCon == nil {
 			log.Infof("ws连接出错:", err)
 			time.Sleep(time.Second * 2)
@@ -79,8 +78,6 @@ func HandleWSMsg() {
 			ws_data.PrintStackTrace(e)
 		}
 		go func() {
-			log.Info("WsCon:", WsCon)
-			log.Info("WsConSucess:", WsConSucess)
 			HandleWSMsg()
 		}()
 	}()
@@ -92,7 +89,6 @@ func HandleWSMsg() {
 		WSRLock.Lock()
 		_, message, e := WsCon.ReadMessage()
 		WSRLock.Unlock()
-		log.Println("收到server消息:", string(message))
 		if e != nil || WsCon == nil {
 			log.Println("出错了：", e)
 			time.Sleep(time.Second * 2)
@@ -103,31 +99,33 @@ func HandleWSMsg() {
 			}()
 			continue
 		}
-		var data ws_data.GMCWSData
-		_ = json.Unmarshal(message, &data)
-		BotClientLock.Lock()
-		cli := BotClientMap[data.BotId]
-		BotClientLock.Unlock()
-		miraiMsg := RawMsgToMiraiMsg(cli, data.Message)
-		switch data.MsgType {
-		case ws_data.GMC_PRIVATE_MESSAGE, ws_data.GMC_TEMP_MESSAGE:
-			BuHuangSendPrivateMsg(cli, miraiMsg, data.UserId, data.GroupId)
-		case ws_data.GMC_GROUP_MESSAGE:
-			BuHuangSendGroupMsg(cli, miraiMsg, data.MessageId, data.GroupId)
-		case ws_data.GMC_WITHDRAW_MESSAGE:
-			BuBuhuangWithDrawMsg(cli, data.GroupId, data.MessageId, data.InternalId)
-		case ws_data.GMC_ALLGROUPMEMBER:
-			HandleGetAllMember(cli)
-		case ws_data.GMC_GROUP_LIST:
-			HandleGroupList(cli)
-		case ws_data.GMC_KICK:
-			BuhuangKickGroupMember(cli, data.GroupId, data.UserId)
-		case ws_data.GMC_BAN:
-			BuhuangBanGroupMember(cli, data.GroupId, data.UserId, data.Time)
-		case ws_data.GMC_GROUP_FILE:
-			BuhuangUploadGroupFile(cli, data.GroupId, data.Message, data.FilePath)
-		case ws_data.GMC_GROUP_REQUEST, ws_data.GMC_BOT_INVITED:
-			ws_data.HandleCallBackEvent(data)
-		}
+		go func() {
+			var data ws_data.GMCWSData
+			_ = json.Unmarshal(message, &data)
+			BotClientLock.Lock()
+			cli := BotClientMap[data.BotId]
+			BotClientLock.Unlock()
+			miraiMsg := RawMsgToMiraiMsg(cli, data.Message)
+			switch data.MsgType {
+			case ws_data.GMC_PRIVATE_MESSAGE, ws_data.GMC_TEMP_MESSAGE:
+				BuHuangSendPrivateMsg(cli, miraiMsg, data.UserId, data.GroupId)
+			case ws_data.GMC_GROUP_MESSAGE:
+				BuHuangSendGroupMsg(cli, miraiMsg, data.MessageId, data.GroupId)
+			case ws_data.GMC_WITHDRAW_MESSAGE:
+				BuBuhuangWithDrawMsg(cli, data.GroupId, data.MessageId, data.InternalId)
+			case ws_data.GMC_ALLGROUPMEMBER:
+				HandleGetAllMember(cli)
+			case ws_data.GMC_GROUP_LIST:
+				HandleGroupList(cli)
+			case ws_data.GMC_KICK:
+				BuhuangKickGroupMember(cli, data.GroupId, data.UserId)
+			case ws_data.GMC_BAN:
+				BuhuangBanGroupMember(cli, data.GroupId, data.UserId, data.Time)
+			case ws_data.GMC_GROUP_FILE:
+				BuhuangUploadGroupFile(cli, data.GroupId, data.Message, data.FilePath)
+			case ws_data.GMC_GROUP_REQUEST, ws_data.GMC_BOT_INVITED:
+				ws_data.HandleCallBackEvent(data)
+			}
+		}()
 	}
 }

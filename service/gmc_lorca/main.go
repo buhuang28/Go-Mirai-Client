@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
+	log "github.com/sirupsen/logrus"
 	"os"
 
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/config"
@@ -25,19 +26,13 @@ func main() {
 		util.FatalError(err)
 		return
 	}
-	//defer func() {
-	//	err2 := ui.Close()
-	//	if err2 != nil {
-	//		ws_data.PrintStackTrace(err2)
-	//		WriteFile("err21.txt",err2.Error())
-	//	}
-	//	//lorca
-	//}()
+	defer func() {
+		log.Info("UI EXIT.")
+		ui.Close()
+	}()
 	<-ui.Done()
-	//log.Info("UI exit.")
-	//select {
-	//
-	//}
+
+	log.Info("UI exit.")
 }
 
 func WriteFile(fileName, content string) bool {

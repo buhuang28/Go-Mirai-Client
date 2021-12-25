@@ -193,34 +193,36 @@ func handlePrivateMessage(cli *client.QQClient, event *message.PrivateMessage) {
 
 //群消息
 func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
-	bot.WSWLock.Lock()
-	defer func() {
-		e := recover()
-		if e != nil {
-			ws_data.PrintStackTrace(e)
+	go func() {
+		defer func() {
+			e := recover()
+			if e != nil {
+				ws_data.PrintStackTrace(e)
+			}
+			bot.WSWLock.Unlock()
+		}()
+		bot.WSWLock.Lock()
+		msg := bot.MiraiMsgToRawMsg2(cli, event.GroupCode, event.Elements)
+		log.Info("收到", event.GroupCode, "的消息:", msg)
+		if bot.WsCon == nil {
+			log.Infof("WS链接爆炸")
+			return
 		}
-		bot.WSWLock.Unlock()
+		cli.MarkGroupMessageReaded(event.GroupCode, int64(event.Id))
+		var data ws_data.GMCWSData
+		data.BotId = cli.Uin
+		data.GroupId = event.GroupCode
+		data.UserId = event.Sender.Uin
+		data.MsgType = ws_data.GMC_GROUP_MESSAGE
+		data.MessageId = int64(event.Id)
+		data.InternalId = event.InternalId
+		data.Message = msg
+		marshal, _ := json.Marshal(data)
+		e := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+		if e != nil {
+			log.Info("handleGroupMessage错误:", e)
+		}
 	}()
-	msg := bot.MiraiMsgToRawMsg2(cli, event.GroupCode, event.Elements)
-	log.Info("收到", event.GroupCode, "群消息:", msg)
-	if bot.WsCon == nil {
-		log.Infof("WS链接爆炸")
-		return
-	}
-	cli.MarkGroupMessageReaded(event.GroupCode, int64(event.Id))
-	var data ws_data.GMCWSData
-	data.BotId = cli.Uin
-	data.GroupId = event.GroupCode
-	data.UserId = event.Sender.Uin
-	data.MsgType = ws_data.GMC_GROUP_MESSAGE
-	data.MessageId = int64(event.Id)
-	data.InternalId = event.InternalId
-	data.Message = msg
-	marshal, _ := json.Marshal(data)
-	e := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-	if e != nil {
-		log.Info("handleGroupMessage错误:", e)
-	}
 }
 
 //临时消息

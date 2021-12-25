@@ -171,7 +171,7 @@ func InitGin() {
 	}()
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
-	//router.Use(gin.Recovery())
+	router.Use(gin.Recovery())
 	if len(config.HttpAuth) > 0 {
 		router.Use(gin.BasicAuth(config.HttpAuth))
 	}

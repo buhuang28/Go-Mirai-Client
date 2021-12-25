@@ -364,6 +364,8 @@ func AfterLogin(cli *client.QQClient) {
 	}
 	log.Infof("共加载 %v 个群.", len(cli.GroupList))
 
+	//bot.Clients.Load(cli.Uin)
+
 	//bot.ConnectUniversal(cli)
 	bot.BotClientLock.Lock()
 	bot.BotClientMap[cli.Uin] = cli

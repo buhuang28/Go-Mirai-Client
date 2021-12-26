@@ -18,6 +18,13 @@ var (
 
 //往QQ群发送消息
 func BuHuangSendGroupMsg(cli *client.QQClient, miraiMsg []message.IMessageElement, msgId, groupId int64) int64 {
+
+	defer func() {
+		e := recover()
+		if e != nil {
+			fmt.Println(e)
+		}
+	}()
 	if cli.FindGroup(groupId) == nil {
 		return 0
 	}
@@ -27,16 +34,11 @@ func BuHuangSendGroupMsg(cli *client.QQClient, miraiMsg []message.IMessageElemen
 		log.Warnf("发送消息内容为空")
 		return -1
 	}
-	//是否切片
+	var record MessageRecord
 	GroupMsgRecordLock.Lock()
 	defer func() {
-		e := recover()
-		if e != nil {
-			fmt.Println(e)
-		}
 		GroupMsgRecordLock.Unlock()
 	}()
-	var record MessageRecord
 	ret := cli.SendGroupMessage(groupId, sendingMessage, false)
 	if ret.Id == -1 {
 		ret = cli.SendGroupMessage(groupId, sendingMessage, false)
@@ -56,6 +58,12 @@ func BuHuangSendGroupMsg(cli *client.QQClient, miraiMsg []message.IMessageElemen
 
 //发送私聊、临时消息
 func BuHuangSendPrivateMsg(cli *client.QQClient, miraiMsg []message.IMessageElement, userId, groupId int64) int64 {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	sendingMessage := &message.SendingMessage{Elements: miraiMsg}
 	if userId != 0 { // 私聊+临时
 		preProcessPrivateSendingMessage(cli, userId, sendingMessage)
@@ -71,6 +79,12 @@ func BuHuangSendPrivateMsg(cli *client.QQClient, miraiMsg []message.IMessageElem
 
 //撤回群消息 -- 这里的msgId，如果internalId是0,那么是自己发送群消息的ID，否则就是接收群消息的时候event的id
 func BuBuhuangWithDrawMsg(cli *client.QQClient, groupId, msgId int64, internalId int32) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	if msgId > 0 && internalId != 0 && groupId > 0 {
 		_ = cli.RecallGroupMessage(groupId, int32(msgId), internalId)
 	}
@@ -91,6 +105,12 @@ func BuBuhuangWithDrawMsg(cli *client.QQClient, groupId, msgId int64, internalId
 
 //往websocket-server传递上线消息
 func BuhuangBotOnline(botId int64) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	if WsCon != nil {
 		var data ws_data.GMCWSData
 		data.BotId = botId
@@ -110,6 +130,12 @@ func BuhuangBotOnline(botId int64) {
 
 //往websocket-server传递下线消息
 func BuhuangBotOffline(botId int64) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	if WsCon != nil {
 		var data ws_data.GMCWSData
 		data.BotId = botId
@@ -121,6 +147,12 @@ func BuhuangBotOffline(botId int64) {
 
 //禁言
 func BuhuangBanGroupMember(cli *client.QQClient, groupId, userId, banTime int64) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	if group := cli.FindGroup(groupId); group != nil {
 		if member := group.FindMember(userId); member != nil {
 			if err := member.Mute(uint32(banTime)); err != nil {
@@ -142,6 +174,12 @@ func BuhuangRejectAddGroupRequest(cli *client.QQClient, groupId, userId int64) {
 
 //踢出
 func BuhuangKickGroupMember(cli *client.QQClient, groupId, userId int64) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	if group := cli.FindGroup(groupId); group != nil {
 		if member := group.FindMember(userId); member != nil {
 			if err := member.Kick("", false); err != nil {
@@ -159,6 +197,12 @@ func BuhuangKickGroupMember(cli *client.QQClient, groupId, userId int64) {
 
 //获取QQ群列表
 func BuhuangGetGroupList(cli *client.QQClient) []ws_data.GMCGroup {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	var groupInfoList []ws_data.GMCGroup
 	groupList := cli.GroupList
 	for _, v := range groupList {
@@ -172,6 +216,12 @@ func BuhuangGetGroupList(cli *client.QQClient) []ws_data.GMCGroup {
 
 //获取特定群成员
 func BuhuangGetGroupMemberList(cli *client.QQClient, groupId int64) []ws_data.GMCMember {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	var memberList []ws_data.GMCMember
 
 	group := cli.FindGroup(groupId)
@@ -195,6 +245,12 @@ func BuhuangGetGroupMemberList(cli *client.QQClient, groupId int64) []ws_data.GM
 
 //获取全部群、成员 -- 这里需要做缓存
 func BuhuangGetAllGroupListAndMemberList(cli *client.QQClient) ws_data.GMCAllGroupMember {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	var allGroupMember ws_data.GMCAllGroupMember
 	data := make(map[int64][]ws_data.GMCMember)
 	groupList := cli.GroupList
@@ -217,6 +273,13 @@ func BuhuangGetAllGroupListAndMemberList(cli *client.QQClient) ws_data.GMCAllGro
 
 //上传群文件
 func BuhuangUploadGroupFile(cli *client.QQClient, groupId int64, fileName, filePath string) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
+
 	//url := cli.GetGroupFileUrl(fromGroup, filePath, int32(busId))
 	//downName := "C:\\data\\" + fileName
 	//err := util.DownloadFile(url, downName, 0, nil)

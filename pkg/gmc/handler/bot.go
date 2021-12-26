@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
+	"io/ioutil"
 	"net/http"
+	"path"
 	"strconv"
 	"sync"
 	"time"
@@ -168,6 +170,10 @@ func SolveCaptcha(c *gin.Context) {
 	Return(c, resp)
 }
 
+var (
+	tempDeviceInfo *client.DeviceInfo
+)
+
 func FetchQrCode(c *gin.Context) {
 	defer func() {
 		e := recover()
@@ -186,9 +192,9 @@ func FetchQrCode(c *gin.Context) {
 	}
 	qrCodeBot = client.NewClientEmpty()
 	deviceInfo := device.GetDevice(req.DeviceSeed)
+	tempDeviceInfo = deviceInfo
 	//deviceInfo.Protocol = client.ClientProtocol(req.Protocal)
 	qrCodeBot.UseDevice(deviceInfo)
-
 	log.Infof("初始化日志")
 	bot.InitLog(qrCodeBot)
 	fetchQRCodeResp, err := qrCodeBot.FetchQRCode()
@@ -259,6 +265,8 @@ func QueryQRCodeStatus(c *gin.Context) {
 			qqInfo.StoreLoginInfo(qrCodeBot.Uin, [16]byte{}, qrCodeBot.GenToken())
 			bot.Clients.Store(qrCodeBot.Uin, qrCodeBot)
 			go AfterLogin(qrCodeBot)
+			devicePath := path.Join("device", fmt.Sprintf("device-%d.json", qrCodeBot.Uin))
+			_ = ioutil.WriteFile(devicePath, tempDeviceInfo.ToJson(), 0644)
 			qrCodeBot = nil
 		}()
 	}
@@ -302,9 +310,11 @@ func CreateBotImplMd5(uin int64, passwordMd5 [16]byte, deviceRandSeed int64) boo
 	}()
 	log.Infof("开始初始化设备信息")
 	deviceInfo := device.GetDevice(uin)
+	deviceRandSeed = uin
 	if deviceRandSeed != 0 {
 		deviceInfo = device.GetDevice(deviceRandSeed)
 	}
+	//deviceInfo.Protocol = 4
 	log.Infof("设备信息 %+v", string(deviceInfo.ToJson()))
 
 	log.Infof("创建机器人 %+v", uin)
@@ -316,7 +326,7 @@ func CreateBotImplMd5(uin int64, passwordMd5 [16]byte, deviceRandSeed int64) boo
 	log.Infof("初始化日志")
 	bot.InitLog(cli)
 
-	log.Infof("登录中...")
+	log.Info(uin, "密码登录中...")
 	ok, err := bot.Login(cli)
 	if err != nil {
 		// TODO 登录失败，是否需要删除？
@@ -324,13 +334,13 @@ func CreateBotImplMd5(uin int64, passwordMd5 [16]byte, deviceRandSeed int64) boo
 		return false
 	}
 	if ok {
-		log.Infof("登录成功")
+		log.Info(uin, "密码登录成功")
 		var qqInfo QQInfo
 		qqInfo.StoreLoginInfo(uin, passwordMd5, cli.GenToken())
-		AfterLogin(cli)
+		go AfterLogin(cli)
 		return true
 	} else {
-		log.Infof("登录失败")
+		log.Info(uin, "密码登录失败")
 		return false
 	}
 }
@@ -347,7 +357,7 @@ func AfterLogin(cli *client.QQClient) {
 		if cli.Online.Load() {
 			break
 		}
-		log.Warnf("机器人不在线，可能在等待输入验证码，或出错了。如果出错请重启。")
+		log.Warnf("%+v机器人不在线，可能在等待输入验证码，或出错了。如果出错请重启。", cli.Uin)
 	}
 	plugin.Serve(cli)
 	log.Infof("插件加载完成")

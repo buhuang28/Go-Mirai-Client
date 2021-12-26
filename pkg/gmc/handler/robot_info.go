@@ -2,10 +2,10 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/bot"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/device"
+	log "github.com/sirupsen/logrus"
 	"strconv"
 	"time"
 )
@@ -40,29 +40,32 @@ func (q *QQInfo) StoreLoginInfo(qq int64, pw [16]byte, token []byte) bool {
 }
 
 func (q *QQInfo) Login() bool {
+	log.Info("开始登录", q.QQ)
+	if q.QQ != 0 && q.PassWord != [16]byte{} {
+		success := CreateBotImplMd5(q.QQ, q.PassWord, q.QQ)
+		if !success {
+			time.Sleep(time.Second * 2)
+			success = CreateBotImplMd5(q.QQ, q.PassWord, q.QQ)
+		}
+		if success {
+			time.Sleep(time.Second)
+			return success
+		}
+	}
 	var botClient = client.NewClientEmpty()
 	deviceInfo := device.GetDevice(q.QQ)
 	botClient.UseDevice(deviceInfo)
 	err := botClient.TokenLogin(q.Token)
-	fmt.Println("使用Token登录:", botClient.Uin)
-	if err == nil {
-		bot.Clients.Store(botClient.Uin, botClient)
-		go AfterLogin(botClient)
-		return true
-	} else {
-		fmt.Println("Token登录失败:", err, q.Token)
+	if err != nil {
 		time.Sleep(time.Second * 2)
 		err = botClient.TokenLogin(q.Token)
-		if err != nil {
-			fmt.Println("Token第二次登录失败:", err, q.Token)
-		}
 	}
-	success := CreateBotImplMd5(q.QQ, q.PassWord, q.QQ)
-	if !success {
-		success = CreateBotImplMd5(q.QQ, q.PassWord, q.QQ)
-	}
-	if success {
+	if err != nil {
+		return false
+	} else {
+		time.Sleep(time.Second)
+		bot.Clients.Store(q.QQ, botClient)
 		go AfterLogin(botClient)
+		return true
 	}
-	return success
 }

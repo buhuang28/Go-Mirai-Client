@@ -34,7 +34,6 @@ func WSDailCall() {
 		if e != nil {
 			ws_data.PrintStackTrace(e)
 			go func() {
-				log.Info("WsCon:", WsCon)
 				log.Info("WsConSucess:", WsConSucess)
 				WSDailCall()
 			}()
@@ -58,6 +57,7 @@ func WSDailCall() {
 			continue
 		} else {
 			WsConSucess = true
+			time.Sleep(time.Second)
 			Clients.Range(func(_ int64, cli *client.QQClient) bool {
 				if cli.Online.Load() {
 					fmt.Println(cli.Uin, "发送上线事件")

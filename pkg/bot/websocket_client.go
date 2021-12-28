@@ -21,7 +21,8 @@ var (
 	WSClientHeader http.Header = make(map[string][]string)
 	//BotClientMap               = make(map[int64]*client.QQClient)
 	//BotClientLock  sync.Mutex
-	SendLock sync.Mutex
+	//SendLock sync.Mutex
+	BotLock sync.Mutex
 )
 
 const (
@@ -103,14 +104,13 @@ func HandleWSMsg() {
 		go func() {
 			var data ws_data.GMCWSData
 			_ = json.Unmarshal(message, &data)
+			BotLock.Lock()
 			cli, ok := Clients.Load(data.BotId)
+			BotLock.Unlock()
 			if !ok {
 				log.Info("加载QQ Cli不存在:", data.BotId)
 				return
 			}
-			//BotClientLock.Lock()
-			//cli := BotClientMap[data.BotId]
-			//BotClientLock.Unlock()
 			miraiMsg := RawMsgToMiraiMsg(cli, data.Message)
 			switch data.MsgType {
 			case ws_data.GMC_PRIVATE_MESSAGE, ws_data.GMC_TEMP_MESSAGE:

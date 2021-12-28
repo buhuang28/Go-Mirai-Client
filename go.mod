@@ -48,6 +48,6 @@ require (
 	golang.org/x/text v0.3.6 // indirect
 )
 
-//replace github.com/Mrs4s/MiraiGo v0.0.0-20211011130217-a3eacd706b29 => github.com/buhuang28/MiraiGo v0.0.0-20211205041544-c70232e4ff57
+replace github.com/Mrs4s/MiraiGo v0.0.0-20211221051559-21f8feb419c9 => github.com/buhuang28/MiraiGo v0.0.0-20211228125221-3e4376e745dd
 
 replace github.com/zserge/lorca v0.1.10 => github.com/buhuang28/lorca v0.1.11-0.20211221093621-3a73c1c1d477

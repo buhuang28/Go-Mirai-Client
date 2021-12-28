@@ -21,7 +21,7 @@ func BuHuangSendGroupMsg(cli *client.QQClient, miraiMsg []message.IMessageElemen
 	defer func() {
 		e := recover()
 		if e != nil {
-			fmt.Println(e)
+			ws_data.PrintStackTrace(e)
 		}
 	}()
 	if cli.FindGroup(groupId) == nil {
@@ -34,14 +34,17 @@ func BuHuangSendGroupMsg(cli *client.QQClient, miraiMsg []message.IMessageElemen
 		return -1
 	}
 	var record MessageRecord
-	GroupMsgRecordLock.Lock()
-	defer func() {
-		GroupMsgRecordLock.Unlock()
-	}()
+
 	ret := cli.SendGroupMessage(groupId, sendingMessage, false)
 	if ret.Id == -1 {
 		ret = cli.SendGroupMessage(groupId, sendingMessage, true)
 		log.Info(cli.Uin, "消息重发返回id:", ret.Id)
+	}
+	if ret.Id != -1 {
+		GroupMsgRecordLock.Lock()
+		defer func() {
+			GroupMsgRecordLock.Unlock()
+		}()
 	}
 	record.EventId = ret.Id
 	record.InternalId = ret.InternalId

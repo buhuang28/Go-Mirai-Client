@@ -265,6 +265,7 @@ type CreateBotReq struct {
 	BotId                int64    `protobuf:"varint,1,opt,name=bot_id,json=botId,proto3" json:"bot_id,omitempty"`
 	Password             string   `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 	DeviceSeed           int64    `protobuf:"varint,3,opt,name=device_seed,json=deviceSeed,proto3" json:"device_seed,omitempty"`
+	ClientProtocol       int32    `protobuf:"varint,4,opt,name=client_protocol,json=clientProtocol,proto3" json:"client_protocol,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -320,6 +321,13 @@ func (m *CreateBotReq) GetPassword() string {
 func (m *CreateBotReq) GetDeviceSeed() int64 {
 	if m != nil {
 		return m.DeviceSeed
+	}
+	return 0
+}
+
+func (m *CreateBotReq) GetClientProtocol() int32 {
+	if m != nil {
+		return m.ClientProtocol
 	}
 	return 0
 }
@@ -635,7 +643,7 @@ var xxx_messageInfo_SolveCaptchaResp proto.InternalMessageInfo
 // 获取二维码 /qrcode/fetch/v1/
 type FetchQRCodeReq struct {
 	DeviceSeed           int64    `protobuf:"varint,1,opt,name=device_seed,json=deviceSeed,proto3" json:"device_seed,omitempty"`
-	Protocal             int      `json:"protocal"`
+	ClientProtocol       int32    `protobuf:"varint,2,opt,name=client_protocol,json=clientProtocol,proto3" json:"client_protocol,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -677,6 +685,13 @@ var xxx_messageInfo_FetchQRCodeReq proto.InternalMessageInfo
 func (m *FetchQRCodeReq) GetDeviceSeed() int64 {
 	if m != nil {
 		return m.DeviceSeed
+	}
+	return 0
+}
+
+func (m *FetchQRCodeReq) GetClientProtocol() int32 {
+	if m != nil {
+		return m.ClientProtocol
 	}
 	return 0
 }
@@ -801,6 +816,430 @@ func (m *QRCodeLoginResp) GetSig() []byte {
 	return nil
 }
 
+type Plugin struct {
+	Name                 string           `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Disabled             bool             `protobuf:"varint,2,opt,name=disabled,proto3" json:"disabled,omitempty"`
+	Json                 bool             `protobuf:"varint,3,opt,name=json,proto3" json:"json,omitempty"`
+	Urls                 []string         `protobuf:"bytes,4,rep,name=urls,proto3" json:"urls,omitempty"`
+	EventFilter          []int32          `protobuf:"varint,5,rep,packed,name=event_filter,json=eventFilter,proto3" json:"event_filter,omitempty"`
+	ApiFilter            []int32          `protobuf:"varint,6,rep,packed,name=api_filter,json=apiFilter,proto3" json:"api_filter,omitempty"`
+	RegexFilter          string           `protobuf:"bytes,7,opt,name=regex_filter,json=regexFilter,proto3" json:"regex_filter,omitempty"`
+	RegexReplace         string           `protobuf:"bytes,8,opt,name=regex_replace,json=regexReplace,proto3" json:"regex_replace,omitempty"`
+	ExtraHeader          []*Plugin_Header `protobuf:"bytes,9,rep,name=extra_header,json=extraHeader,proto3" json:"extra_header,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
+}
+
+func (m *Plugin) Reset()         { *m = Plugin{} }
+func (m *Plugin) String() string { return proto.CompactTextString(m) }
+func (*Plugin) ProtoMessage()    {}
+func (*Plugin) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3b5f7d4a2149a8d0, []int{12}
+}
+func (m *Plugin) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Plugin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Plugin.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Plugin) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Plugin.Merge(m, src)
+}
+func (m *Plugin) XXX_Size() int {
+	return m.Size()
+}
+func (m *Plugin) XXX_DiscardUnknown() {
+	xxx_messageInfo_Plugin.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Plugin proto.InternalMessageInfo
+
+func (m *Plugin) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Plugin) GetDisabled() bool {
+	if m != nil {
+		return m.Disabled
+	}
+	return false
+}
+
+func (m *Plugin) GetJson() bool {
+	if m != nil {
+		return m.Json
+	}
+	return false
+}
+
+func (m *Plugin) GetUrls() []string {
+	if m != nil {
+		return m.Urls
+	}
+	return nil
+}
+
+func (m *Plugin) GetEventFilter() []int32 {
+	if m != nil {
+		return m.EventFilter
+	}
+	return nil
+}
+
+func (m *Plugin) GetApiFilter() []int32 {
+	if m != nil {
+		return m.ApiFilter
+	}
+	return nil
+}
+
+func (m *Plugin) GetRegexFilter() string {
+	if m != nil {
+		return m.RegexFilter
+	}
+	return ""
+}
+
+func (m *Plugin) GetRegexReplace() string {
+	if m != nil {
+		return m.RegexReplace
+	}
+	return ""
+}
+
+func (m *Plugin) GetExtraHeader() []*Plugin_Header {
+	if m != nil {
+		return m.ExtraHeader
+	}
+	return nil
+}
+
+type Plugin_Header struct {
+	Key                  string   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Value                []string `protobuf:"bytes,2,rep,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Plugin_Header) Reset()         { *m = Plugin_Header{} }
+func (m *Plugin_Header) String() string { return proto.CompactTextString(m) }
+func (*Plugin_Header) ProtoMessage()    {}
+func (*Plugin_Header) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3b5f7d4a2149a8d0, []int{12, 0}
+}
+func (m *Plugin_Header) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Plugin_Header) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Plugin_Header.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Plugin_Header) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Plugin_Header.Merge(m, src)
+}
+func (m *Plugin_Header) XXX_Size() int {
+	return m.Size()
+}
+func (m *Plugin_Header) XXX_DiscardUnknown() {
+	xxx_messageInfo_Plugin_Header.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Plugin_Header proto.InternalMessageInfo
+
+func (m *Plugin_Header) GetKey() string {
+	if m != nil {
+		return m.Key
+	}
+	return ""
+}
+
+func (m *Plugin_Header) GetValue() []string {
+	if m != nil {
+		return m.Value
+	}
+	return nil
+}
+
+type ListPluginReq struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ListPluginReq) Reset()         { *m = ListPluginReq{} }
+func (m *ListPluginReq) String() string { return proto.CompactTextString(m) }
+func (*ListPluginReq) ProtoMessage()    {}
+func (*ListPluginReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3b5f7d4a2149a8d0, []int{13}
+}
+func (m *ListPluginReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListPluginReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListPluginReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListPluginReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListPluginReq.Merge(m, src)
+}
+func (m *ListPluginReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListPluginReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListPluginReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListPluginReq proto.InternalMessageInfo
+
+type ListPluginResp struct {
+	Plugins              []*Plugin `protobuf:"bytes,1,rep,name=plugins,proto3" json:"plugins,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *ListPluginResp) Reset()         { *m = ListPluginResp{} }
+func (m *ListPluginResp) String() string { return proto.CompactTextString(m) }
+func (*ListPluginResp) ProtoMessage()    {}
+func (*ListPluginResp) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3b5f7d4a2149a8d0, []int{14}
+}
+func (m *ListPluginResp) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListPluginResp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListPluginResp.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListPluginResp) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListPluginResp.Merge(m, src)
+}
+func (m *ListPluginResp) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListPluginResp) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListPluginResp.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListPluginResp proto.InternalMessageInfo
+
+func (m *ListPluginResp) GetPlugins() []*Plugin {
+	if m != nil {
+		return m.Plugins
+	}
+	return nil
+}
+
+type SavePluginReq struct {
+	Plugin               *Plugin  `protobuf:"bytes,1,opt,name=plugin,proto3" json:"plugin,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SavePluginReq) Reset()         { *m = SavePluginReq{} }
+func (m *SavePluginReq) String() string { return proto.CompactTextString(m) }
+func (*SavePluginReq) ProtoMessage()    {}
+func (*SavePluginReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3b5f7d4a2149a8d0, []int{15}
+}
+func (m *SavePluginReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SavePluginReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SavePluginReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SavePluginReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SavePluginReq.Merge(m, src)
+}
+func (m *SavePluginReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *SavePluginReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_SavePluginReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SavePluginReq proto.InternalMessageInfo
+
+func (m *SavePluginReq) GetPlugin() *Plugin {
+	if m != nil {
+		return m.Plugin
+	}
+	return nil
+}
+
+type SavePluginResp struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SavePluginResp) Reset()         { *m = SavePluginResp{} }
+func (m *SavePluginResp) String() string { return proto.CompactTextString(m) }
+func (*SavePluginResp) ProtoMessage()    {}
+func (*SavePluginResp) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3b5f7d4a2149a8d0, []int{16}
+}
+func (m *SavePluginResp) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SavePluginResp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SavePluginResp.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SavePluginResp) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SavePluginResp.Merge(m, src)
+}
+func (m *SavePluginResp) XXX_Size() int {
+	return m.Size()
+}
+func (m *SavePluginResp) XXX_DiscardUnknown() {
+	xxx_messageInfo_SavePluginResp.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SavePluginResp proto.InternalMessageInfo
+
+type DeletePluginReq struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeletePluginReq) Reset()         { *m = DeletePluginReq{} }
+func (m *DeletePluginReq) String() string { return proto.CompactTextString(m) }
+func (*DeletePluginReq) ProtoMessage()    {}
+func (*DeletePluginReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3b5f7d4a2149a8d0, []int{17}
+}
+func (m *DeletePluginReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DeletePluginReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DeletePluginReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DeletePluginReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeletePluginReq.Merge(m, src)
+}
+func (m *DeletePluginReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *DeletePluginReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeletePluginReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeletePluginReq proto.InternalMessageInfo
+
+func (m *DeletePluginReq) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type DeletePluginResp struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeletePluginResp) Reset()         { *m = DeletePluginResp{} }
+func (m *DeletePluginResp) String() string { return proto.CompactTextString(m) }
+func (*DeletePluginResp) ProtoMessage()    {}
+func (*DeletePluginResp) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3b5f7d4a2149a8d0, []int{18}
+}
+func (m *DeletePluginResp) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DeletePluginResp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DeletePluginResp.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DeletePluginResp) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeletePluginResp.Merge(m, src)
+}
+func (m *DeletePluginResp) XXX_Size() int {
+	return m.Size()
+}
+func (m *DeletePluginResp) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeletePluginResp.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeletePluginResp proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterEnum("dto.Bot_Captcha_CaptchaType", Bot_Captcha_CaptchaType_name, Bot_Captcha_CaptchaType_value)
 	proto.RegisterEnum("dto.QRCodeLoginResp_QRCodeLoginState", QRCodeLoginResp_QRCodeLoginState_name, QRCodeLoginResp_QRCodeLoginState_value)
@@ -817,60 +1256,87 @@ func init() {
 	proto.RegisterType((*FetchQRCodeReq)(nil), "dto.FetchQRCodeReq")
 	proto.RegisterType((*QueryQRCodeStatusReq)(nil), "dto.QueryQRCodeStatusReq")
 	proto.RegisterType((*QRCodeLoginResp)(nil), "dto.QRCodeLoginResp")
+	proto.RegisterType((*Plugin)(nil), "dto.Plugin")
+	proto.RegisterType((*Plugin_Header)(nil), "dto.Plugin.Header")
+	proto.RegisterType((*ListPluginReq)(nil), "dto.ListPluginReq")
+	proto.RegisterType((*ListPluginResp)(nil), "dto.ListPluginResp")
+	proto.RegisterType((*SavePluginReq)(nil), "dto.SavePluginReq")
+	proto.RegisterType((*SavePluginResp)(nil), "dto.SavePluginResp")
+	proto.RegisterType((*DeletePluginReq)(nil), "dto.DeletePluginReq")
+	proto.RegisterType((*DeletePluginResp)(nil), "dto.DeletePluginResp")
 }
 
 func init() { proto.RegisterFile("http_dto.proto", fileDescriptor_3b5f7d4a2149a8d0) }
 
 var fileDescriptor_3b5f7d4a2149a8d0 = []byte{
-	// 755 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x54, 0xdd, 0x6e, 0xe3, 0x44,
-	0x14, 0x8e, 0xe3, 0xfc, 0x1e, 0x7b, 0x93, 0xe9, 0xd9, 0xec, 0x12, 0xb2, 0x10, 0x22, 0xa3, 0x95,
-	0x22, 0x84, 0x2a, 0x11, 0x6e, 0x90, 0xb8, 0x58, 0x1a, 0x27, 0x21, 0x91, 0xc2, 0xfe, 0x8c, 0xbb,
-	0x8b, 0x10, 0x17, 0x96, 0x13, 0x0f, 0xa9, 0x45, 0xea, 0x31, 0x9e, 0xc9, 0x56, 0x7d, 0x13, 0x1e,
-	0x01, 0xf1, 0x24, 0x5c, 0x72, 0xcd, 0x55, 0x55, 0xde, 0x80, 0x27, 0x40, 0x1e, 0x3b, 0xa9, 0x93,
-	0xa6, 0xda, 0xab, 0xf6, 0x7c, 0xf3, 0x7d, 0xdf, 0x99, 0x73, 0xe6, 0x73, 0xa0, 0x71, 0x21, 0x65,
-	0xe4, 0xfa, 0x92, 0x9f, 0x46, 0x31, 0x97, 0x1c, 0x75, 0x5f, 0x72, 0xeb, 0x9f, 0x22, 0xe8, 0x43,
-	0x2e, 0xf1, 0x09, 0x54, 0x16, 0x5c, 0xba, 0x81, 0xdf, 0xd6, 0x7a, 0x5a, 0x5f, 0xa7, 0xe5, 0x05,
-	0x97, 0x33, 0x1f, 0x9f, 0x41, 0x3d, 0x10, 0x2e, 0x0f, 0xd7, 0x41, 0xc8, 0xda, 0xc5, 0x9e, 0xd6,
-	0xaf, 0xd1, 0x5a, 0x20, 0x5e, 0xa9, 0x1a, 0xbf, 0x80, 0xea, 0xd2, 0x8b, 0xe4, 0xf2, 0xc2, 0x6b,
-	0xeb, 0x3d, 0xad, 0x6f, 0x0c, 0xc8, 0x69, 0xe2, 0x3e, 0xe4, 0xf2, 0xd4, 0x4e, 0x71, 0xba, 0x25,
-	0x74, 0xfe, 0xd3, 0xa0, 0x9a, 0x81, 0x0f, 0xf5, 0x7a, 0x01, 0x66, 0xc6, 0x76, 0xe5, 0x75, 0x94,
-	0xb6, 0x6b, 0x0c, 0x3e, 0x39, 0xf4, 0xdc, 0xfe, 0x3d, 0xbf, 0x8e, 0x18, 0x35, 0x96, 0x77, 0x05,
-	0x22, 0xe8, 0x9b, 0x78, 0xad, 0xee, 0x52, 0x9f, 0x16, 0x68, 0x52, 0xe0, 0x53, 0x28, 0x07, 0x97,
-	0xde, 0x8a, 0xb5, 0x4b, 0x3d, 0xad, 0x6f, 0x4e, 0x0b, 0x34, 0x2d, 0xad, 0x9f, 0xc1, 0xc8, 0xf9,
-	0x60, 0x13, 0x8c, 0xd7, 0x33, 0xdb, 0xb5, 0xcf, 0x5e, 0x9f, 0xdb, 0xd3, 0x33, 0x52, 0x40, 0x84,
-	0x86, 0x33, 0x9f, 0x8d, 0xc6, 0x74, 0x87, 0x69, 0xd8, 0x85, 0xce, 0xdb, 0x97, 0xce, 0xd9, 0x64,
-	0xec, 0x8e, 0xc6, 0xef, 0x66, 0xf6, 0xd8, 0x9d, 0xbf, 0xfa, 0x7e, 0xf6, 0xd2, 0x7d, 0x37, 0xa6,
-	0xb3, 0xc9, 0x4f, 0xa4, 0x88, 0x55, 0xd0, 0x9d, 0x1f, 0x1c, 0x52, 0x1a, 0x56, 0xa0, 0xe4, 0x7b,
-	0xd2, 0xb3, 0x16, 0x60, 0xda, 0x31, 0xf3, 0x24, 0x1b, 0x72, 0x49, 0xd9, 0x6f, 0x0f, 0x0d, 0xde,
-	0x81, 0x5a, 0xe4, 0x09, 0x71, 0xc5, 0x63, 0x5f, 0x0d, 0x5d, 0xa7, 0xbb, 0x1a, 0x3f, 0x03, 0xc3,
-	0x67, 0xef, 0x83, 0x25, 0x73, 0x05, 0x63, 0xbe, 0x9a, 0x4d, 0xa7, 0x90, 0x42, 0x0e, 0x63, 0xbe,
-	0xd5, 0x84, 0x47, 0xb9, 0x1e, 0x22, 0xb2, 0x9e, 0x83, 0x39, 0x62, 0x6b, 0xf6, 0x81, 0xa6, 0x89,
-	0x2e, 0x47, 0x13, 0x91, 0x65, 0x02, 0xcc, 0x03, 0x21, 0x53, 0x95, 0x35, 0x00, 0x63, 0x57, 0x89,
-	0x08, 0x3f, 0x87, 0x5a, 0x62, 0xb2, 0x0e, 0x84, 0x6c, 0x6b, 0x3d, 0xbd, 0x6f, 0x0c, 0x6a, 0xdb,
-	0x77, 0xa1, 0xd5, 0x05, 0x97, 0x09, 0xd7, 0xfa, 0x0e, 0x9a, 0x0e, 0x5f, 0xbf, 0x67, 0xdb, 0xc7,
-	0x7f, 0x78, 0xe2, 0xa7, 0x50, 0x89, 0x99, 0xd8, 0xac, 0x65, 0x36, 0x6f, 0x56, 0x59, 0x08, 0x64,
-	0xdf, 0x41, 0x44, 0xd6, 0x57, 0xd0, 0x98, 0x30, 0xb9, 0xbc, 0x78, 0x43, 0x6d, 0xee, 0xb3, 0xc4,
-	0xf4, 0x60, 0x27, 0xda, 0xbd, 0x9d, 0xbc, 0x80, 0xd6, 0x9b, 0x0d, 0x8b, 0xaf, 0x53, 0x89, 0x23,
-	0x3d, 0xb9, 0x11, 0x89, 0x90, 0x80, 0x2e, 0x82, 0x95, 0x12, 0x98, 0x34, 0xf9, 0x37, 0x77, 0xbf,
-	0x62, 0x7e, 0x39, 0x7f, 0x16, 0xa1, 0x99, 0x8a, 0xe7, 0x7c, 0x15, 0x84, 0x6a, 0x05, 0xdf, 0x42,
-	0x59, 0x48, 0x4f, 0x32, 0x25, 0x6f, 0x0c, 0x9e, 0xab, 0xf9, 0x0f, 0x48, 0xf9, 0x3a, 0x69, 0xcb,
-	0x68, 0xaa, 0xc1, 0x4f, 0x01, 0x54, 0xee, 0xdc, 0x24, 0x17, 0xaa, 0x97, 0x49, 0xeb, 0x0a, 0x19,
-	0x79, 0xd2, 0xdb, 0x5e, 0x4c, 0xdf, 0x5d, 0xcc, 0xfa, 0x43, 0x03, 0x72, 0x68, 0x86, 0x06, 0x54,
-	0xdf, 0x86, 0xbf, 0x86, 0xfc, 0x2a, 0x24, 0x05, 0x6c, 0x6d, 0x09, 0xb3, 0xc4, 0x46, 0xad, 0x88,
-	0x68, 0xd8, 0x86, 0x56, 0x8a, 0xfe, 0xe8, 0x05, 0x32, 0x08, 0x57, 0x13, 0x1e, 0x3b, 0x4b, 0x2f,
-	0x24, 0x45, 0x7c, 0x06, 0x1f, 0x1d, 0x9e, 0xd8, 0x3c, 0xfc, 0x25, 0x88, 0x2f, 0x89, 0x8e, 0x27,
-	0xf0, 0x28, 0x3d, 0x3c, 0x0f, 0x2e, 0x19, 0xdf, 0x48, 0x52, 0xc2, 0xc7, 0xdb, 0x15, 0x64, 0x2c,
-	0xe6, 0x93, 0x72, 0xf2, 0x59, 0x64, 0xa0, 0x17, 0x2e, 0xd9, 0x9a, 0xf9, 0xa4, 0x32, 0xb8, 0x29,
-	0x82, 0x31, 0x95, 0x32, 0x72, 0x58, 0x9c, 0xbc, 0x00, 0x0e, 0xa0, 0xbe, 0x4b, 0x24, 0x9e, 0xa8,
-	0x35, 0xe5, 0xbf, 0x82, 0x0e, 0x1e, 0x42, 0x22, 0x4a, 0x34, 0xbb, 0x34, 0x66, 0x9a, 0x7c, 0x88,
-	0x33, 0xcd, 0x5e, 0x60, 0xf1, 0x4b, 0xa8, 0x66, 0x11, 0xc5, 0xa6, 0x3a, 0xbe, 0x8b, 0x6f, 0x87,
-	0xec, 0x03, 0xea, 0xf9, 0xcc, 0x7c, 0xb4, 0xb0, 0xa5, 0x18, 0x07, 0x79, 0xed, 0x3c, 0x39, 0x82,
-	0x8a, 0x08, 0xbf, 0x01, 0x23, 0x97, 0x41, 0x7c, 0xac, 0x58, 0xfb, 0xa9, 0xec, 0xb4, 0x8e, 0x05,
-	0x02, 0x47, 0x70, 0x72, 0x2f, 0x8a, 0xf8, 0x71, 0x4a, 0x3d, 0x12, 0xd1, 0xe3, 0x2e, 0x43, 0xf2,
-	0xd7, 0x6d, 0x57, 0xfb, 0xfb, 0xb6, 0xab, 0xdd, 0xdc, 0x76, 0xb5, 0xdf, 0xff, 0xed, 0x16, 0x16,
-	0x15, 0xf5, 0x1b, 0xfe, 0xf5, 0xff, 0x01, 0x00, 0x00, 0xff, 0xff, 0xe6, 0xe0, 0x2f, 0x24, 0xd5,
-	0x05, 0x00, 0x00,
+	// 1069 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x54, 0xdd, 0x6e, 0xe3, 0x44,
+	0x14, 0xae, 0xe3, 0xfc, 0x1e, 0xbb, 0x89, 0xf7, 0x34, 0xbb, 0x84, 0x2c, 0x94, 0xac, 0xab, 0x8a,
+	0x08, 0xa1, 0x0a, 0x05, 0x56, 0x20, 0x71, 0xb1, 0xb4, 0x69, 0x4b, 0x23, 0x95, 0xdd, 0xee, 0xa4,
+	0xbb, 0x08, 0xb8, 0xb0, 0xa6, 0xf1, 0x6c, 0x6a, 0xd6, 0xb5, 0x8d, 0x67, 0xd2, 0xdd, 0x3e, 0xc3,
+	0xbe, 0x00, 0x8f, 0x80, 0x78, 0x12, 0x2e, 0x91, 0xb8, 0xe3, 0x0a, 0x95, 0x37, 0xe0, 0x09, 0xd0,
+	0xcc, 0xd8, 0xa9, 0x93, 0x4d, 0x05, 0x57, 0xf6, 0xf9, 0xe6, 0x3b, 0x67, 0x66, 0xbe, 0x39, 0xe7,
+	0x83, 0xe6, 0xb9, 0x10, 0x89, 0xe7, 0x8b, 0x78, 0x27, 0x49, 0x63, 0x11, 0xa3, 0xe9, 0x8b, 0xd8,
+	0xfd, 0xb3, 0x04, 0xe6, 0x5e, 0x2c, 0xf0, 0x2e, 0x54, 0xcf, 0x62, 0xe1, 0x05, 0x7e, 0xc7, 0xe8,
+	0x19, 0x7d, 0x93, 0x54, 0xce, 0x62, 0x31, 0xf2, 0xf1, 0x3e, 0x34, 0x02, 0xee, 0xc5, 0x51, 0x18,
+	0x44, 0xac, 0x53, 0xea, 0x19, 0xfd, 0x3a, 0xa9, 0x07, 0xfc, 0x89, 0x8a, 0xf1, 0x23, 0xa8, 0x4d,
+	0x68, 0x22, 0x26, 0xe7, 0xb4, 0x63, 0xf6, 0x8c, 0xbe, 0x35, 0x70, 0x76, 0x64, 0xf5, 0xbd, 0x58,
+	0xec, 0x0c, 0x35, 0x4e, 0x72, 0x42, 0xf7, 0x1f, 0x03, 0x6a, 0x19, 0x78, 0xdb, 0x5e, 0x8f, 0xc0,
+	0xce, 0xd8, 0x9e, 0xb8, 0x4a, 0xf4, 0x76, 0xcd, 0xc1, 0x7b, 0xcb, 0x35, 0xf3, 0xef, 0xe9, 0x55,
+	0xc2, 0x88, 0x35, 0xb9, 0x09, 0x10, 0xc1, 0x9c, 0xa5, 0xa1, 0x3a, 0x4b, 0xe3, 0x68, 0x8d, 0xc8,
+	0x00, 0xef, 0x41, 0x25, 0xb8, 0xa0, 0x53, 0xd6, 0x29, 0xf7, 0x8c, 0xbe, 0x7d, 0xb4, 0x46, 0x74,
+	0xe8, 0xfe, 0x00, 0x56, 0xa1, 0x0e, 0xb6, 0xc0, 0x3a, 0x19, 0x0d, 0xbd, 0xe1, 0xee, 0xc9, 0xe9,
+	0xf0, 0x68, 0xd7, 0x59, 0x43, 0x84, 0xe6, 0xf8, 0x78, 0xb4, 0x7f, 0x40, 0xe6, 0x98, 0x81, 0x9b,
+	0xd0, 0x7d, 0xf6, 0x78, 0xbc, 0x7b, 0x78, 0xe0, 0xed, 0x1f, 0x3c, 0x1f, 0x0d, 0x0f, 0xbc, 0xe3,
+	0x27, 0x5f, 0x8f, 0x1e, 0x7b, 0xcf, 0x0f, 0xc8, 0xe8, 0xf0, 0x3b, 0xa7, 0x84, 0x35, 0x30, 0xc7,
+	0xdf, 0x8c, 0x9d, 0xf2, 0x5e, 0x15, 0xca, 0x3e, 0x15, 0xd4, 0x7d, 0x63, 0x80, 0x3d, 0x4c, 0x19,
+	0x15, 0x6c, 0x2f, 0x16, 0x84, 0xfd, 0x74, 0xdb, 0xcd, 0xbb, 0x50, 0x4f, 0x28, 0xe7, 0xaf, 0xe2,
+	0xd4, 0x57, 0xb7, 0x6e, 0x90, 0x79, 0x8c, 0x1f, 0x80, 0xe5, 0xb3, 0xcb, 0x60, 0xc2, 0x3c, 0xce,
+	0x98, 0xaf, 0x2e, 0x67, 0x12, 0xd0, 0xd0, 0x98, 0x31, 0x1f, 0x3f, 0x84, 0xd6, 0x24, 0x0c, 0x58,
+	0x24, 0x3c, 0xf5, 0xac, 0x93, 0x38, 0x54, 0x77, 0xad, 0x90, 0xa6, 0x86, 0x4f, 0x32, 0xd4, 0x6d,
+	0xc1, 0x7a, 0xe1, 0x30, 0x3c, 0x71, 0xb7, 0xc1, 0xde, 0x67, 0x21, 0xfb, 0x8f, 0xd3, 0xc9, 0xbc,
+	0x02, 0x8d, 0x27, 0xae, 0x0d, 0x70, 0x1c, 0x70, 0xa1, 0xb3, 0xdc, 0x01, 0x58, 0xf3, 0x88, 0x27,
+	0xb8, 0x05, 0x75, 0x59, 0x24, 0x0c, 0xb8, 0xe8, 0x18, 0x3d, 0xb3, 0x6f, 0x0d, 0xea, 0xf9, 0x0b,
+	0x92, 0xda, 0x59, 0x2c, 0x24, 0xd7, 0xfd, 0x0a, 0x5a, 0xe3, 0x38, 0xbc, 0x64, 0x79, 0x9b, 0xdc,
+	0x2e, 0xcd, 0x3d, 0xa8, 0xa6, 0x8c, 0xcf, 0x42, 0x91, 0x09, 0x93, 0x45, 0x2e, 0x82, 0xb3, 0x58,
+	0x81, 0x27, 0xee, 0xf7, 0xd0, 0x3c, 0x64, 0x62, 0x72, 0xfe, 0x94, 0x0c, 0x63, 0x9f, 0xc9, 0xa2,
+	0x4b, 0xe2, 0x19, 0xff, 0x47, 0xbc, 0xd2, 0x4a, 0xf1, 0x1e, 0x41, 0xfb, 0xe9, 0x8c, 0xa5, 0x57,
+	0xba, 0xf6, 0x58, 0x50, 0x31, 0xe3, 0x72, 0x07, 0x07, 0x4c, 0x1e, 0x4c, 0x55, 0x65, 0x9b, 0xc8,
+	0xdf, 0xc2, 0x45, 0x4a, 0x45, 0x15, 0x7f, 0x2d, 0x41, 0x4b, 0x27, 0x1f, 0xc7, 0xd3, 0x20, 0x52,
+	0x5a, 0x7d, 0x09, 0x15, 0x2e, 0xa8, 0x60, 0x2a, 0xbd, 0x39, 0xd8, 0x56, 0x42, 0x2d, 0x91, 0x8a,
+	0xb1, 0xdc, 0x96, 0x11, 0x9d, 0x83, 0xef, 0x03, 0xa8, 0x56, 0xf6, 0x64, 0xab, 0xa9, 0xbd, 0x6c,
+	0xd2, 0x50, 0xc8, 0x3e, 0x15, 0x34, 0x3f, 0x98, 0x39, 0x3f, 0x98, 0xfb, 0x8b, 0x01, 0xce, 0x72,
+	0x31, 0xb4, 0xa0, 0xf6, 0x2c, 0x7a, 0x19, 0xc5, 0xaf, 0x22, 0x67, 0x0d, 0xdb, 0x39, 0x61, 0x24,
+	0xcb, 0x28, 0x2d, 0x1d, 0x03, 0x3b, 0xd0, 0xd6, 0xe8, 0xb7, 0x34, 0x10, 0x41, 0x34, 0x3d, 0x8c,
+	0xd3, 0xf1, 0x84, 0x46, 0x4e, 0x09, 0xef, 0xc3, 0x3b, 0xcb, 0x2b, 0xc3, 0x38, 0x7a, 0x11, 0xa4,
+	0x17, 0x8e, 0x89, 0x77, 0x60, 0x5d, 0x2f, 0x9e, 0x06, 0x17, 0x2c, 0x9e, 0x09, 0xa7, 0x8c, 0x1b,
+	0xb9, 0x04, 0x19, 0x8b, 0xf9, 0x4e, 0x45, 0x4e, 0x5a, 0x06, 0xd2, 0x68, 0xc2, 0x42, 0xe6, 0x3b,
+	0x55, 0xf7, 0x8f, 0x12, 0x54, 0x4f, 0xc2, 0xd9, 0x34, 0x88, 0x10, 0xa1, 0x1c, 0xd1, 0x0b, 0x2d,
+	0x51, 0x83, 0xa8, 0x7f, 0x39, 0x2f, 0x7e, 0xc0, 0xe9, 0x59, 0xc8, 0xfc, 0xdc, 0x94, 0xf2, 0x58,
+	0xf2, 0x7f, 0xe4, 0x71, 0xa4, 0x2e, 0x5e, 0x27, 0xea, 0x5f, 0x62, 0xb3, 0x34, 0xe4, 0x9d, 0x72,
+	0xcf, 0x94, 0x35, 0xe4, 0x3f, 0x3e, 0x00, 0x9b, 0x5d, 0xca, 0x87, 0x7f, 0x11, 0x84, 0x82, 0xa5,
+	0x9d, 0x4a, 0xcf, 0xec, 0x57, 0x88, 0xa5, 0xb0, 0x43, 0x05, 0x49, 0x85, 0x69, 0x12, 0xe4, 0x84,
+	0xaa, 0x22, 0x34, 0x68, 0x12, 0x64, 0xcb, 0x0f, 0xc0, 0x4e, 0xd9, 0x94, 0xbd, 0xce, 0x09, 0x35,
+	0x75, 0x42, 0x4b, 0x61, 0x19, 0x65, 0x0b, 0xd6, 0x35, 0x25, 0x65, 0x49, 0x48, 0x27, 0xac, 0x53,
+	0x57, 0x1c, 0x9d, 0x47, 0x34, 0x86, 0x0f, 0xc1, 0x66, 0xaf, 0x45, 0x4a, 0xbd, 0x73, 0x46, 0x7d,
+	0x96, 0x76, 0x1a, 0x6a, 0x6a, 0x50, 0x35, 0x83, 0x16, 0x61, 0xe7, 0x48, 0xad, 0x10, 0x4b, 0xf1,
+	0x74, 0xd0, 0xfd, 0x04, 0xaa, 0xfa, 0x4f, 0x3e, 0xf5, 0x4b, 0x76, 0x95, 0x29, 0x24, 0x7f, 0xb1,
+	0x0d, 0x95, 0x4b, 0x1a, 0xce, 0xa4, 0x87, 0xca, 0x1b, 0xeb, 0x40, 0x0e, 0xb2, 0x9c, 0x3e, 0x5d,
+	0x53, 0x8e, 0xee, 0xe7, 0xd0, 0x2c, 0x02, 0x3c, 0xc1, 0x6d, 0xa8, 0x25, 0x2a, 0xe2, 0xd9, 0xf0,
+	0x5a, 0x85, 0x63, 0x90, 0x7c, 0xcd, 0xfd, 0x0c, 0xd6, 0xc7, 0xf4, 0x92, 0xcd, 0x2b, 0xe1, 0x16,
+	0x54, 0xf5, 0x9a, 0x3a, 0xc5, 0x52, 0x5a, 0xb6, 0xe4, 0x3a, 0xd0, 0x2c, 0x66, 0x29, 0x07, 0x6a,
+	0x69, 0x6b, 0xb9, 0xa9, 0xb4, 0xe2, 0xbd, 0xe5, 0xb0, 0x2f, 0xd2, 0x78, 0x32, 0x78, 0x53, 0x06,
+	0xeb, 0x48, 0x88, 0x64, 0xcc, 0x52, 0x39, 0xcd, 0x38, 0x80, 0xc6, 0xdc, 0xdd, 0xf0, 0x8e, 0xda,
+	0xbe, 0x68, 0xbd, 0x5d, 0x5c, 0x86, 0x78, 0x22, 0x73, 0xe6, 0xce, 0x96, 0xe5, 0x14, 0x0d, 0x31,
+	0xcb, 0x59, 0x30, 0x3f, 0xfc, 0x18, 0x6a, 0x99, 0xdd, 0x61, 0x4b, 0x2d, 0xdf, 0x58, 0x61, 0xd7,
+	0x59, 0x04, 0xd4, 0x84, 0xdb, 0x45, 0x9b, 0xc2, 0xb6, 0x62, 0x2c, 0x79, 0x5f, 0xf7, 0xee, 0x0a,
+	0x94, 0x27, 0xf8, 0x05, 0x58, 0x05, 0x3f, 0xc3, 0x0d, 0xc5, 0x5a, 0x74, 0xb8, 0x6e, 0x7b, 0x95,
+	0x67, 0xe0, 0x3e, 0xdc, 0x79, 0xcb, 0xad, 0xf0, 0x5d, 0x4d, 0x5d, 0xe1, 0x62, 0xb7, 0x54, 0x79,
+	0xa8, 0x7d, 0x3e, 0x1f, 0xc4, 0xf9, 0xe5, 0xe6, 0x8f, 0xd5, 0xdd, 0x78, 0x0b, 0xd3, 0x69, 0x37,
+	0xcf, 0x9c, 0xa5, 0x2d, 0x74, 0x4b, 0x96, 0xb6, 0xd8, 0x0b, 0x52, 0xaa, 0xe2, 0x23, 0x67, 0x52,
+	0x2d, 0xb5, 0x47, 0x26, 0xd5, 0x72, 0x37, 0xec, 0x39, 0xbf, 0x5d, 0x6f, 0x1a, 0xbf, 0x5f, 0x6f,
+	0x1a, 0x7f, 0x5d, 0x6f, 0x1a, 0x3f, 0xff, 0xbd, 0xb9, 0x76, 0x56, 0x55, 0x86, 0xfe, 0xe9, 0xbf,
+	0x01, 0x00, 0x00, 0xff, 0xff, 0xff, 0xa2, 0xb5, 0x05, 0xf6, 0x08, 0x00, 0x00,
 }
 
 func (m *Bot) Marshal() (dAtA []byte, err error) {
@@ -1026,6 +1492,11 @@ func (m *CreateBotReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.XXX_unrecognized != nil {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.ClientProtocol != 0 {
+		i = encodeVarintHttpDto(dAtA, i, uint64(m.ClientProtocol))
+		i--
+		dAtA[i] = 0x20
 	}
 	if m.DeviceSeed != 0 {
 		i = encodeVarintHttpDto(dAtA, i, uint64(m.DeviceSeed))
@@ -1291,6 +1762,11 @@ func (m *FetchQRCodeReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
+	if m.ClientProtocol != 0 {
+		i = encodeVarintHttpDto(dAtA, i, uint64(m.ClientProtocol))
+		i--
+		dAtA[i] = 0x10
+	}
 	if m.DeviceSeed != 0 {
 		i = encodeVarintHttpDto(dAtA, i, uint64(m.DeviceSeed))
 		i--
@@ -1380,6 +1856,373 @@ func (m *QRCodeLoginResp) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintHttpDto(dAtA, i, uint64(m.State))
 		i--
 		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Plugin) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Plugin) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Plugin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ExtraHeader) > 0 {
+		for iNdEx := len(m.ExtraHeader) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.ExtraHeader[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintHttpDto(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x4a
+		}
+	}
+	if len(m.RegexReplace) > 0 {
+		i -= len(m.RegexReplace)
+		copy(dAtA[i:], m.RegexReplace)
+		i = encodeVarintHttpDto(dAtA, i, uint64(len(m.RegexReplace)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.RegexFilter) > 0 {
+		i -= len(m.RegexFilter)
+		copy(dAtA[i:], m.RegexFilter)
+		i = encodeVarintHttpDto(dAtA, i, uint64(len(m.RegexFilter)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.ApiFilter) > 0 {
+		dAtA3 := make([]byte, len(m.ApiFilter)*10)
+		var j2 int
+		for _, num1 := range m.ApiFilter {
+			num := uint64(num1)
+			for num >= 1<<7 {
+				dAtA3[j2] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j2++
+			}
+			dAtA3[j2] = uint8(num)
+			j2++
+		}
+		i -= j2
+		copy(dAtA[i:], dAtA3[:j2])
+		i = encodeVarintHttpDto(dAtA, i, uint64(j2))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.EventFilter) > 0 {
+		dAtA5 := make([]byte, len(m.EventFilter)*10)
+		var j4 int
+		for _, num1 := range m.EventFilter {
+			num := uint64(num1)
+			for num >= 1<<7 {
+				dAtA5[j4] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j4++
+			}
+			dAtA5[j4] = uint8(num)
+			j4++
+		}
+		i -= j4
+		copy(dAtA[i:], dAtA5[:j4])
+		i = encodeVarintHttpDto(dAtA, i, uint64(j4))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Urls) > 0 {
+		for iNdEx := len(m.Urls) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Urls[iNdEx])
+			copy(dAtA[i:], m.Urls[iNdEx])
+			i = encodeVarintHttpDto(dAtA, i, uint64(len(m.Urls[iNdEx])))
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if m.Json {
+		i--
+		if m.Json {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Disabled {
+		i--
+		if m.Disabled {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintHttpDto(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Plugin_Header) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Plugin_Header) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Plugin_Header) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Value) > 0 {
+		for iNdEx := len(m.Value) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Value[iNdEx])
+			copy(dAtA[i:], m.Value[iNdEx])
+			i = encodeVarintHttpDto(dAtA, i, uint64(len(m.Value[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Key) > 0 {
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
+		i = encodeVarintHttpDto(dAtA, i, uint64(len(m.Key)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListPluginReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListPluginReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListPluginReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListPluginResp) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListPluginResp) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListPluginResp) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Plugins) > 0 {
+		for iNdEx := len(m.Plugins) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Plugins[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintHttpDto(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SavePluginReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SavePluginReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SavePluginReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Plugin != nil {
+		{
+			size, err := m.Plugin.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintHttpDto(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SavePluginResp) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SavePluginResp) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SavePluginResp) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DeletePluginReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeletePluginReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeletePluginReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintHttpDto(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DeletePluginResp) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeletePluginResp) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeletePluginResp) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	return len(dAtA) - i, nil
 }
@@ -1475,6 +2318,9 @@ func (m *CreateBotReq) Size() (n int) {
 	}
 	if m.DeviceSeed != 0 {
 		n += 1 + sovHttpDto(uint64(m.DeviceSeed))
+	}
+	if m.ClientProtocol != 0 {
+		n += 1 + sovHttpDto(uint64(m.ClientProtocol))
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -1591,6 +2437,9 @@ func (m *FetchQRCodeReq) Size() (n int) {
 	if m.DeviceSeed != 0 {
 		n += 1 + sovHttpDto(uint64(m.DeviceSeed))
 	}
+	if m.ClientProtocol != 0 {
+		n += 1 + sovHttpDto(uint64(m.ClientProtocol))
+	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -1633,6 +2482,170 @@ func (m *QRCodeLoginResp) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovHttpDto(uint64(l))
 	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *Plugin) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovHttpDto(uint64(l))
+	}
+	if m.Disabled {
+		n += 2
+	}
+	if m.Json {
+		n += 2
+	}
+	if len(m.Urls) > 0 {
+		for _, s := range m.Urls {
+			l = len(s)
+			n += 1 + l + sovHttpDto(uint64(l))
+		}
+	}
+	if len(m.EventFilter) > 0 {
+		l = 0
+		for _, e := range m.EventFilter {
+			l += sovHttpDto(uint64(e))
+		}
+		n += 1 + sovHttpDto(uint64(l)) + l
+	}
+	if len(m.ApiFilter) > 0 {
+		l = 0
+		for _, e := range m.ApiFilter {
+			l += sovHttpDto(uint64(e))
+		}
+		n += 1 + sovHttpDto(uint64(l)) + l
+	}
+	l = len(m.RegexFilter)
+	if l > 0 {
+		n += 1 + l + sovHttpDto(uint64(l))
+	}
+	l = len(m.RegexReplace)
+	if l > 0 {
+		n += 1 + l + sovHttpDto(uint64(l))
+	}
+	if len(m.ExtraHeader) > 0 {
+		for _, e := range m.ExtraHeader {
+			l = e.Size()
+			n += 1 + l + sovHttpDto(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *Plugin_Header) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Key)
+	if l > 0 {
+		n += 1 + l + sovHttpDto(uint64(l))
+	}
+	if len(m.Value) > 0 {
+		for _, s := range m.Value {
+			l = len(s)
+			n += 1 + l + sovHttpDto(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ListPluginReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ListPluginResp) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Plugins) > 0 {
+		for _, e := range m.Plugins {
+			l = e.Size()
+			n += 1 + l + sovHttpDto(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *SavePluginReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Plugin != nil {
+		l = m.Plugin.Size()
+		n += 1 + l + sovHttpDto(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *SavePluginResp) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *DeletePluginReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovHttpDto(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *DeletePluginResp) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -2026,6 +3039,25 @@ func (m *CreateBotReq) Unmarshal(dAtA []byte) error {
 				b := dAtA[iNdEx]
 				iNdEx++
 				m.DeviceSeed |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClientProtocol", wireType)
+			}
+			m.ClientProtocol = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpDto
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ClientProtocol |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2585,6 +3617,25 @@ func (m *FetchQRCodeReq) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClientProtocol", wireType)
+			}
+			m.ClientProtocol = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpDto
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ClientProtocol |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipHttpDto(dAtA[iNdEx:])
@@ -2833,6 +3884,958 @@ func (m *QRCodeLoginResp) Unmarshal(dAtA []byte) error {
 				m.Sig = []byte{}
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipHttpDto(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Plugin) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowHttpDto
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Plugin: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Plugin: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpDto
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Disabled", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpDto
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Disabled = bool(v != 0)
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Json", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpDto
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Json = bool(v != 0)
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Urls", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpDto
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Urls = append(m.Urls, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 5:
+			if wireType == 0 {
+				var v int32
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowHttpDto
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int32(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.EventFilter = append(m.EventFilter, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowHttpDto
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return ErrInvalidLengthHttpDto
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return ErrInvalidLengthHttpDto
+				}
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				var count int
+				for _, integer := range dAtA[iNdEx:postIndex] {
+					if integer < 128 {
+						count++
+					}
+				}
+				elementCount = count
+				if elementCount != 0 && len(m.EventFilter) == 0 {
+					m.EventFilter = make([]int32, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v int32
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowHttpDto
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= int32(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.EventFilter = append(m.EventFilter, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field EventFilter", wireType)
+			}
+		case 6:
+			if wireType == 0 {
+				var v int32
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowHttpDto
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int32(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.ApiFilter = append(m.ApiFilter, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowHttpDto
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return ErrInvalidLengthHttpDto
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return ErrInvalidLengthHttpDto
+				}
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				var count int
+				for _, integer := range dAtA[iNdEx:postIndex] {
+					if integer < 128 {
+						count++
+					}
+				}
+				elementCount = count
+				if elementCount != 0 && len(m.ApiFilter) == 0 {
+					m.ApiFilter = make([]int32, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v int32
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowHttpDto
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= int32(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.ApiFilter = append(m.ApiFilter, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field ApiFilter", wireType)
+			}
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RegexFilter", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpDto
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RegexFilter = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RegexReplace", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpDto
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RegexReplace = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ExtraHeader", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpDto
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ExtraHeader = append(m.ExtraHeader, &Plugin_Header{})
+			if err := m.ExtraHeader[len(m.ExtraHeader)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipHttpDto(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Plugin_Header) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowHttpDto
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Header: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Header: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Key", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpDto
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Key = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpDto
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Value = append(m.Value, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipHttpDto(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListPluginReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowHttpDto
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListPluginReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListPluginReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipHttpDto(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListPluginResp) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowHttpDto
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListPluginResp: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListPluginResp: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Plugins", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpDto
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Plugins = append(m.Plugins, &Plugin{})
+			if err := m.Plugins[len(m.Plugins)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipHttpDto(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SavePluginReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowHttpDto
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SavePluginReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SavePluginReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Plugin", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpDto
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Plugin == nil {
+				m.Plugin = &Plugin{}
+			}
+			if err := m.Plugin.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipHttpDto(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SavePluginResp) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowHttpDto
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SavePluginResp: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SavePluginResp: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipHttpDto(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DeletePluginReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowHttpDto
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DeletePluginReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DeletePluginReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttpDto
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipHttpDto(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthHttpDto
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DeletePluginResp) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowHttpDto
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DeletePluginResp: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DeletePluginResp: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipHttpDto(dAtA[iNdEx:])

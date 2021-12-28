@@ -18,7 +18,6 @@ var (
 
 //往QQ群发送消息
 func BuHuangSendGroupMsg(cli *client.QQClient, miraiMsg []message.IMessageElement, msgId, groupId int64) int64 {
-
 	defer func() {
 		e := recover()
 		if e != nil {
@@ -41,7 +40,8 @@ func BuHuangSendGroupMsg(cli *client.QQClient, miraiMsg []message.IMessageElemen
 	}()
 	ret := cli.SendGroupMessage(groupId, sendingMessage, false)
 	if ret.Id == -1 {
-		ret = cli.SendGroupMessage(groupId, sendingMessage, false)
+		ret = cli.SendGroupMessage(groupId, sendingMessage, true)
+		log.Info(cli.Uin, "消息重发返回id:", ret.Id)
 	}
 	record.EventId = ret.Id
 	record.InternalId = ret.InternalId

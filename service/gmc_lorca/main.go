@@ -31,8 +31,6 @@ func main() {
 		ui.Close()
 	}()
 	<-ui.Done()
-
-	log.Info("UI exit.")
 }
 
 func WriteFile(fileName, content string) bool {

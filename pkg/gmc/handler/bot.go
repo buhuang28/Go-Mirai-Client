@@ -79,7 +79,7 @@ func CreateBot(c *gin.Context) {
 		return
 	}
 	go func() {
-		CreateBotImpl(req.BotId, req.Password, req.DeviceSeed)
+		CreateBotImpl(req.BotId, req.Password, req.DeviceSeed, req.ClientProtocol)
 	}()
 	resp := &dto.CreateBotResp{}
 	Return(c, resp)
@@ -191,10 +191,9 @@ func FetchQrCode(c *gin.Context) {
 		qrCodeBot.Release()
 	}
 	qrCodeBot = client.NewClientEmpty()
-	deviceInfo := device.GetDevice(req.DeviceSeed)
-	tempDeviceInfo = deviceInfo
-	//deviceInfo.Protocol = client.ClientProtocol(req.Protocal)
+	deviceInfo := device.GetDevice(req.DeviceSeed, req.ClientProtocol)
 	qrCodeBot.UseDevice(deviceInfo)
+	tempDeviceInfo = deviceInfo
 	log.Infof("初始化日志")
 	bot.InitLog(qrCodeBot)
 	fetchQRCodeResp, err := qrCodeBot.FetchQRCode()
@@ -211,21 +210,20 @@ func FetchQrCode(c *gin.Context) {
 }
 
 func QueryQRCodeStatus(c *gin.Context) {
+	queryQRCodeMutex.Lock()
 	defer func() {
 		e := recover()
 		if e != nil {
 			ws_data.PrintStackTrace(e)
 		}
+		defer queryQRCodeMutex.Unlock()
 	}()
-	queryQRCodeMutex.Lock()
-	defer queryQRCodeMutex.Unlock()
 	req := &dto.QueryQRCodeStatusReq{}
 	err := c.Bind(req)
 	if err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("failed to bind, %+v", err))
 		return
 	}
-
 	if qrCodeBot == nil {
 		c.String(http.StatusBadRequest, "please fetch qrcode first")
 		return
@@ -244,8 +242,13 @@ func QueryQRCodeStatus(c *gin.Context) {
 	if queryQRCodeStatusResp.State == client.QRCodeConfirmed {
 		go func() {
 			queryQRCodeMutex.Lock()
-			defer queryQRCodeMutex.Unlock()
-
+			defer func() {
+				e := recover()
+				if e != nil {
+					ws_data.PrintStackTrace(e)
+				}
+				defer queryQRCodeMutex.Unlock()
+			}()
 			loginResp, err := qrCodeBot.QRCodeLogin(queryQRCodeStatusResp.LoginInfo)
 			if err != nil {
 				c.String(http.StatusInternalServerError, fmt.Sprintf("failed to qrcode login, %+v", err))
@@ -262,9 +265,9 @@ func QueryQRCodeStatus(c *gin.Context) {
 				originCli.Release()
 			}
 			var qqInfo QQInfo
-			qqInfo.StoreLoginInfo(qrCodeBot.Uin, [16]byte{}, qrCodeBot.GenToken())
+			qqInfo.StoreLoginInfo(qrCodeBot.Uin, [16]byte{}, qrCodeBot.GenToken(), int32(tempDeviceInfo.Protocol))
 			bot.Clients.Store(qrCodeBot.Uin, qrCodeBot)
-			go AfterLogin(qrCodeBot)
+			go AfterLogin(qrCodeBot, int32(tempDeviceInfo.Protocol))
 			devicePath := path.Join("device", fmt.Sprintf("device-%d.json", qrCodeBot.Uin))
 			_ = ioutil.WriteFile(devicePath, tempDeviceInfo.ToJson(), 0644)
 			qrCodeBot = nil
@@ -297,11 +300,11 @@ func Return(c *gin.Context, resp proto.Message) {
 	c.Data(http.StatusOK, c.ContentType(), data)
 }
 
-func CreateBotImpl(uin int64, password string, deviceRandSeed int64) {
-	CreateBotImplMd5(uin, md5.Sum([]byte(password)), deviceRandSeed)
+func CreateBotImpl(uin int64, password string, deviceRandSeed int64, clientProtocol int32) {
+	CreateBotImplMd5(uin, md5.Sum([]byte(password)), deviceRandSeed, clientProtocol)
 }
 
-func CreateBotImplMd5(uin int64, passwordMd5 [16]byte, deviceRandSeed int64) bool {
+func CreateBotImplMd5(uin int64, passwordMd5 [16]byte, deviceRandSeed int64, clientProtocol int32) bool {
 	defer func() {
 		e := recover()
 		if e != nil {
@@ -309,10 +312,10 @@ func CreateBotImplMd5(uin int64, passwordMd5 [16]byte, deviceRandSeed int64) boo
 		}
 	}()
 	log.Infof("开始初始化设备信息")
-	deviceInfo := device.GetDevice(uin)
+	deviceInfo := device.GetDevice(uin, clientProtocol)
 	deviceRandSeed = uin
 	if deviceRandSeed != 0 {
-		deviceInfo = device.GetDevice(deviceRandSeed)
+		deviceInfo = device.GetDevice(deviceRandSeed, clientProtocol)
 	}
 	//deviceInfo.Protocol = 4
 	log.Infof("设备信息 %+v", string(deviceInfo.ToJson()))
@@ -336,8 +339,8 @@ func CreateBotImplMd5(uin int64, passwordMd5 [16]byte, deviceRandSeed int64) boo
 	if ok {
 		log.Info(uin, "密码登录成功")
 		var qqInfo QQInfo
-		qqInfo.StoreLoginInfo(uin, passwordMd5, cli.GenToken())
-		go AfterLogin(cli)
+		qqInfo.StoreLoginInfo(uin, passwordMd5, cli.GenToken(), clientProtocol)
+		go AfterLogin(cli, clientProtocol)
 		return true
 	} else {
 		log.Info(uin, "密码登录失败")
@@ -345,7 +348,7 @@ func CreateBotImplMd5(uin int64, passwordMd5 [16]byte, deviceRandSeed int64) boo
 	}
 }
 
-func AfterLogin(cli *client.QQClient) {
+func AfterLogin(cli *client.QQClient, clientProtocol int32) {
 	defer func() {
 		e := recover()
 		if e != nil {
@@ -374,12 +377,6 @@ func AfterLogin(cli *client.QQClient) {
 	}
 	log.Infof("共加载 %v 个群.", len(cli.GroupList))
 
-	//bot.Clients.Load(cli.Uin)
-
-	//bot.ConnectUniversal(cli)
-	bot.BotClientLock.Lock()
-	bot.BotClientMap[cli.Uin] = cli
-	bot.BotClientLock.Unlock()
 	bot.SetRelogin(cli, 30, 20)
 	bot.BuhuangBotOnline(cli.Uin)
 	go func() {
@@ -388,6 +385,6 @@ func AfterLogin(cli *client.QQClient) {
 		json.Unmarshal(fileByte, &qqInfo)
 		getToken := cli.GenToken()
 		fmt.Println("获取token成功")
-		qqInfo.StoreLoginInfo(cli.Uin, qqInfo.PassWord, getToken)
+		qqInfo.StoreLoginInfo(cli.Uin, qqInfo.PassWord, getToken, clientProtocol)
 	}()
 }

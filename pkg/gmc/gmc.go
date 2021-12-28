@@ -153,15 +153,6 @@ func WriteGmcConfigFile(filePath string) {
 	}
 }
 
-func CreateBotIfParamExist() {
-	if uin != 0 && pass != "" {
-		log.Infof("使用参数创建机器人 %d", uin)
-		go func() {
-			handler.CreateBotImpl(uin, pass, 0)
-		}()
-	}
-}
-
 func InitGin() {
 	defer func() {
 		e := recover()

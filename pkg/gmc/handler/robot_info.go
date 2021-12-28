@@ -21,10 +21,11 @@ type QQInfo struct {
 	PassWord [16]byte `json:"pass_word"`
 	Token    []byte   `json:"token"`
 	//对应的随机种子文件
-	SeedFile string `json:"seed_file"`
+	SeedFile       string `json:"seed_file"`
+	ClientProtocol int32  `json:"client_protocol"`
 }
 
-func (q *QQInfo) StoreLoginInfo(qq int64, pw [16]byte, token []byte) bool {
+func (q *QQInfo) StoreLoginInfo(qq int64, pw [16]byte, token []byte, clientProtocol int32) bool {
 	q.QQ = qq
 	if q.QQ == 0 {
 		return false
@@ -42,10 +43,10 @@ func (q *QQInfo) StoreLoginInfo(qq int64, pw [16]byte, token []byte) bool {
 func (q *QQInfo) Login() bool {
 	log.Info("开始登录", q.QQ)
 	if q.QQ != 0 && q.PassWord != [16]byte{} {
-		success := CreateBotImplMd5(q.QQ, q.PassWord, q.QQ)
+		success := CreateBotImplMd5(q.QQ, q.PassWord, q.QQ, q.ClientProtocol)
 		if !success {
 			time.Sleep(time.Second * 2)
-			success = CreateBotImplMd5(q.QQ, q.PassWord, q.QQ)
+			success = CreateBotImplMd5(q.QQ, q.PassWord, q.QQ, q.ClientProtocol)
 		}
 		if success {
 			time.Sleep(time.Second)
@@ -53,7 +54,7 @@ func (q *QQInfo) Login() bool {
 		}
 	}
 	var botClient = client.NewClientEmpty()
-	deviceInfo := device.GetDevice(q.QQ)
+	deviceInfo := device.GetDevice(q.QQ, q.ClientProtocol)
 	botClient.UseDevice(deviceInfo)
 	err := botClient.TokenLogin(q.Token)
 	if err != nil {
@@ -65,7 +66,7 @@ func (q *QQInfo) Login() bool {
 	} else {
 		time.Sleep(time.Second)
 		bot.Clients.Store(q.QQ, botClient)
-		go AfterLogin(botClient)
+		go AfterLogin(botClient, q.ClientProtocol)
 		return true
 	}
 }

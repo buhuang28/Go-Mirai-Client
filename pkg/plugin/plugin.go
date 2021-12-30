@@ -203,7 +203,7 @@ func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
 		}()
 		bot.WSWLock.Lock()
 		msg := bot.MiraiMsgToRawMsg2(cli, event.GroupCode, event.Elements)
-		log.Info("收到", event.GroupCode, "的消息:", msg)
+		log.Info("收到群聊消息")
 		if bot.WsCon == nil {
 			log.Infof("WS链接爆炸")
 			return

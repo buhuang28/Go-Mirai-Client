@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 	"sync"
+	"time"
 )
 
 var (
@@ -34,10 +35,12 @@ func BuHuangSendGroupMsg(cli *client.QQClient, miraiMsg []message.IMessageElemen
 		return -1
 	}
 	var record MessageRecord
-
+	nt := time.Now().Unix()
 	ret := cli.SendGroupMessage(groupId, sendingMessage, false)
+	nt2 := time.Now().Unix()
+	log.Info("发送使用时间:", nt2-nt)
 	if ret.Id == -1 {
-		ret = cli.SendGroupMessage(groupId, sendingMessage, true)
+		ret = cli.SendGroupMessage(groupId, sendingMessage, false)
 		log.Info(cli.Uin, "消息重发返回id:", ret.Id)
 	}
 	if ret.Id != -1 {

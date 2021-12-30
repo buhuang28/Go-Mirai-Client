@@ -19,10 +19,7 @@ var (
 	WSRLock        sync.Mutex
 	WSCallLock     sync.Mutex
 	WSClientHeader http.Header = make(map[string][]string)
-	//BotClientMap               = make(map[int64]*client.QQClient)
-	//BotClientLock  sync.Mutex
-	//SendLock sync.Mutex
-	BotLock sync.Mutex
+	BotLock        sync.Mutex
 )
 
 const (
@@ -116,12 +113,7 @@ func HandleWSMsg() {
 			case ws_data.GMC_PRIVATE_MESSAGE, ws_data.GMC_TEMP_MESSAGE:
 				BuHuangSendPrivateMsg(cli, miraiMsg, data.UserId, data.GroupId)
 			case ws_data.GMC_GROUP_MESSAGE:
-				nt := time.Now().Unix()
-				retId := BuHuangSendGroupMsg(cli, miraiMsg, data.MessageId, data.GroupId)
-				nt2 := time.Now().Unix()
-				if nt2-nt > 3 {
-					log.Info("发送消息超时:", data.Message, "\r\n返回id为:", retId)
-				}
+				BuHuangSendGroupMsg(cli, miraiMsg, data.MessageId, data.GroupId)
 			case ws_data.GMC_WITHDRAW_MESSAGE:
 				BuBuhuangWithDrawMsg(cli, data.GroupId, data.MessageId, data.InternalId)
 			case ws_data.GMC_ALLGROUPMEMBER:

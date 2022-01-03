@@ -54,7 +54,7 @@ func ConnectUniversal(cli *client.QQClient) {
 			for IsClientExist(cli.Uin) {
 				urlIndex = (urlIndex + 1) % len(serverGroup.Urls)
 				serverUrl := serverGroup.Urls[urlIndex]
-				log.Infof("开始连接Websocket服务器 [%s](%s)", serverGroup.Name, serverUrl)
+				//log.Infof("开始连接Websocket服务器 [%s](%s)", serverGroup.Name, serverUrl)
 				header := http.Header{}
 				for k, v := range serverGroup.ExtraHeader {
 					if v != nil {
@@ -65,11 +65,11 @@ func ConnectUniversal(cli *client.QQClient) {
 				header["X-Client-Role"] = []string{"Universal"}
 				conn, _, err := websocket.DefaultDialer.Dial(serverUrl, header)
 				if err != nil {
-					log.Warnf("连接Websocket服务器 [%s](%s) 错误，5秒后重连: %v", serverGroup.Name, serverUrl, err)
+					//log.Warnf("连接Websocket服务器 [%s](%s) 错误，5秒后重连: %v", serverGroup.Name, serverUrl, err)
 					time.Sleep(5 * time.Second)
 					continue
 				}
-				log.Infof("连接Websocket服务器成功 [%s](%s)", serverGroup.Name, serverUrl)
+				//log.Infof("连接Websocket服务器成功 [%s](%s)", serverGroup.Name, serverUrl)
 				closeChan := make(chan int, 1)
 				safeWs := safe_ws.NewSafeWebSocket(conn, OnWsRecvMessage(cli), func() {
 					defer func() {
@@ -85,7 +85,7 @@ func ConnectUniversal(cli *client.QQClient) {
 				}
 				if serverGroup.RegexFilter != "" {
 					if regex, err := regexp.Compile(serverGroup.RegexFilter); err != nil {
-						log.Errorf("failed to compile [%s], regex_filter: %s", serverGroup.Name, serverGroup.RegexFilter)
+						//log.Errorf("failed to compile [%s], regex_filter: %s", serverGroup.Name, serverGroup.RegexFilter)
 					} else {
 						botServers[serverGroup.Name].regexp = regex
 					}
@@ -101,10 +101,10 @@ func ConnectUniversal(cli *client.QQClient) {
 				<-closeChan
 				close(closeChan)
 				delete(botServers, serverGroup.Name)
-				log.Warnf("Websocket 服务器 [%s](%s) 已断开，5秒后重连", serverGroup.Name, serverUrl)
+				//log.Warnf("Websocket 服务器 [%s](%s) 已断开，5秒后重连", serverGroup.Name, serverUrl)
 				time.Sleep(5 * time.Second)
 			}
-			log.Errorf("client does not exist, close websocket, %+v", cli.Uin)
+			//log.Errorf("client does not exist, close websocket, %+v", cli.Uin)
 		})
 	}
 }
@@ -119,7 +119,7 @@ func OnWsRecvMessage(cli *client.QQClient) func(ws *safe_ws.SafeWebSocket, messa
 			return
 		}
 		if !cli.Online.Load() {
-			log.Warnf("bot is not online, ignore API, %+v", cli.Uin)
+			//log.Warnf("bot is not online, ignore API, %+v", cli.Uin)
 			return
 		}
 		var apiReq onebot.Frame
@@ -127,18 +127,18 @@ func OnWsRecvMessage(cli *client.QQClient) func(ws *safe_ws.SafeWebSocket, messa
 		case websocket.BinaryMessage:
 			err := proto.Unmarshal(data, &apiReq)
 			if err != nil {
-				log.Errorf("收到API binary，解析错误 %v", err)
+				//log.Errorf("收到API binary，解析错误 %v", err)
 				return
 			}
 		case websocket.TextMessage:
 			err := jsonUnmarshaler.Unmarshal(bytes.NewReader(data), &apiReq)
 			if err != nil {
-				log.Errorf("收到API text，解析错误 %v", err)
+				//log.Errorf("收到API text，解析错误 %v", err)
 				return
 			}
 		}
 
-		log.Debugf("收到 apiReq 信息, %+v", util.MustMarshal(apiReq))
+		//log.Debugf("收到 apiReq 信息, %+v", util.MustMarshal(apiReq))
 
 		apiResp := handleApiFrame(cli, &apiReq)
 		var (
@@ -149,16 +149,16 @@ func OnWsRecvMessage(cli *client.QQClient) func(ws *safe_ws.SafeWebSocket, messa
 		case websocket.BinaryMessage:
 			respBytes, err = apiResp.Marshal()
 			if err != nil {
-				log.Errorf("failed to marshal api resp, %+v", err)
+				//log.Errorf("failed to marshal api resp, %+v", err)
 			}
 		case websocket.TextMessage:
 			respStr, err := jsonMarshaler.MarshalToString(apiResp)
 			if err != nil {
-				log.Errorf("failed to marshal api resp, %+v", err)
+				//log.Errorf("failed to marshal api resp, %+v", err)
 			}
 			respBytes = []byte(respStr)
 		}
-		log.Debugf("发送 apiResp 信息, %+v", util.MustMarshal(apiResp))
+		//log.Debugf("发送 apiResp 信息, %+v", util.MustMarshal(apiResp))
 		_ = ws.Send(messageType, respBytes)
 	}
 }
@@ -296,13 +296,13 @@ func HandleEventFrame(cli *client.QQClient, eventFrame *onebot.Frame) {
 	eventFrame.BotId = cli.Uin
 	eventBytes, err := eventFrame.Marshal() // 原消息
 	if err != nil {
-		log.Errorf("event 序列化错误 %v", err)
+		//log.Errorf("event 序列化错误 %v", err)
 		return
 	}
 
 	wsServers, ok := RemoteServers.Load(cli.Uin)
 	if !ok {
-		log.Warnf("failed to load remote servers, %+v", cli.Uin)
+		//log.Warnf("failed to load remote servers, %+v", cli.Uin)
 		return
 	}
 

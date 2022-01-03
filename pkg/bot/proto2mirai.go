@@ -35,7 +35,7 @@ func ProtoMsgToMiraiMsg(cli *client.QQClient, msgList []*onebot.Message, notConv
 			} else {
 				text, ok := protoMsg.Data["text"]
 				if !ok {
-					log.Warnf("text不存在")
+					//log.Warnf("text不存在")
 					continue
 				}
 				messageChain = append(messageChain, RawMsgToMiraiMsg(cli, text)...) // 转换xml码
@@ -72,7 +72,7 @@ func ProtoMsgToMiraiMsg(cli *client.QQClient, msgList []*onebot.Message, notConv
 		case "gift":
 			//messageChain = append(messageChain, ProtoGiftToMiraiGift(cli, protoMsg.Data))
 		default:
-			log.Errorf("不支持的消息类型 %+v", protoMsg)
+			//log.Errorf("不支持的消息类型 %+v", protoMsg)
 		}
 	}
 	return messageChain
@@ -81,7 +81,7 @@ func ProtoMsgToMiraiMsg(cli *client.QQClient, msgList []*onebot.Message, notConv
 func ProtoTextToMiraiText(data map[string]string) message.IMessageElement {
 	text, ok := data["text"]
 	if !ok {
-		log.Warnf("text不存在")
+		//log.Warnf("text不存在")
 		return EmptyText()
 	}
 	return message.NewText(text)
@@ -98,21 +98,21 @@ func ProtoImageToMiraiImage(data map[string]string) message.IMessageElement {
 		}
 	}
 	if !ok {
-		log.Warnf("imageUrl不存在")
+		//log.Warnf("imageUrl不存在")
 		return EmptyText()
 	}
 	elem.Url = url
 	if strings.Contains(url, "http://") || strings.Contains(url, "https://") {
 		b, err := util.GetBytes(url)
 		if err != nil {
-			log.Errorf("failed to download image, %+v", err)
+			//log.Errorf("failed to download image, %+v", err)
 			return EmptyText()
 		}
 		elem.Stream = bytes.NewReader(b)
 	} else {
 		imageBytes, err := ioutil.ReadFile(url)
 		if err != nil {
-			log.Errorf("failed to open local image, %+v", err)
+			//log.Errorf("failed to open local image, %+v", err)
 			return EmptyText()
 		}
 		elem.Stream = bytes.NewReader(imageBytes)

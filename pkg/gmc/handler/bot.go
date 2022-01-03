@@ -15,7 +15,6 @@ import (
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/bot"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/device"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/plugin"
-	"github.com/ProtobufBot/Go-Mirai-Client/pkg/util"
 	"github.com/ProtobufBot/Go-Mirai-Client/proto_gen/dto"
 
 	"github.com/Mrs4s/MiraiGo/client"
@@ -283,6 +282,12 @@ func QueryQRCodeStatus(c *gin.Context) {
 }
 
 func Return(c *gin.Context, resp proto.Message) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			ws_data.PrintStackTrace(e)
+		}
+	}()
 	var (
 		data []byte
 		err  error
@@ -367,13 +372,15 @@ func AfterLogin(cli *client.QQClient, clientProtocol int32) {
 
 	log.Infof("刷新好友列表")
 	if err := cli.ReloadFriendList(); err != nil {
-		util.FatalError(fmt.Errorf("failed to load friend list, err: %+v", err))
+		log.Info(err)
+		//util.FatalError(fmt.Errorf("failed to load friend list, err: %+v", err))
 	}
 	log.Infof("共加载 %v 个好友.", len(cli.FriendList))
 
 	log.Infof("刷新群列表")
 	if err := cli.ReloadGroupList(); err != nil {
-		util.FatalError(fmt.Errorf("failed to load group list, err: %+v", err))
+		log.Info(err)
+		//util.FatalError(fmt.Errorf("failed to load group list, err: %+v", err))
 	}
 	log.Infof("共加载 %v 个群.", len(cli.GroupList))
 

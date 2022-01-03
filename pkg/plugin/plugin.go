@@ -7,7 +7,6 @@ import (
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/bot"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/util"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
-	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 	"time"
 )
@@ -165,13 +164,13 @@ func Serve(cli *client.QQClient) {
 
 //私聊消息
 func handlePrivateMessage(cli *client.QQClient, event *message.PrivateMessage) {
-	bot.WSWLock.Lock()
+	//bot.WSWLock.Lock()
 	defer func() {
 		e := recover()
 		if e != nil {
 			ws_data.PrintStackTrace(e)
 		}
-		bot.WSWLock.Unlock()
+		//bot.WSWLock.Unlock()
 	}()
 	msg := bot.MiraiMsgToRawMsg(cli, event.Elements)
 	log.Info("收到", event.Sender.Uin, "私聊消息:", msg)
@@ -185,10 +184,11 @@ func handlePrivateMessage(cli *client.QQClient, event *message.PrivateMessage) {
 	data.MsgType = ws_data.GMC_PRIVATE_MESSAGE
 	data.Message = msg
 	marshal, _ := json.Marshal(data)
-	err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-	if err != nil {
-		log.Info("handlePrivateMessage出错", err)
-	}
+	//err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+	bot.WsCon.Write(marshal)
+	//if err != nil {
+	//	log.Info("handlePrivateMessage出错", err)
+	//}
 }
 
 //群消息
@@ -199,9 +199,9 @@ func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
 			if e != nil {
 				ws_data.PrintStackTrace(e)
 			}
-			bot.WSWLock.Unlock()
+			//bot.WSWLock.Unlock()
 		}()
-		bot.WSWLock.Lock()
+		//bot.WSWLock.Lock()
 		msg := bot.MiraiMsgToRawMsg2(cli, event.GroupCode, event.Elements)
 		log.Info("收到群聊消息")
 		if bot.WsCon == nil {
@@ -218,25 +218,26 @@ func handleGroupMessage(cli *client.QQClient, event *message.GroupMessage) {
 		data.InternalId = event.InternalId
 		data.Message = msg
 		marshal, _ := json.Marshal(data)
-		e := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-		if e != nil {
-			log.Info("handleGroupMessage错误:", e)
-		}
+		//e := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+		//if e != nil {
+		//log.Info("handleGroupMessage错误:", e)
+		//}
+		bot.WsCon.Write(marshal)
 	}()
 }
 
 //临时消息
 func handleTempMessage(cli *client.QQClient, event *client.TempMessageEvent) {
-	bot.WSWLock.Lock()
+	//bot.WSWLock.Lock()
 	defer func() {
 		e := recover()
 		if e != nil {
 			ws_data.PrintStackTrace(e)
 		}
-		bot.WSWLock.Unlock()
+		//bot.WSWLock.Unlock()
 	}()
 	msg := bot.MiraiMsgToRawMsg(cli, event.Message.Elements)
-	log.Info("收到", event.Message.GroupCode, "群,", event.Message.Sender.Uin, "的临时私聊消息:", msg)
+	//log.Info("收到", event.Message.GroupCode, "群,", event.Message.Sender.Uin, "的临时私聊消息:", msg)
 	if bot.WsCon == nil {
 		return
 	}
@@ -247,21 +248,22 @@ func handleTempMessage(cli *client.QQClient, event *client.TempMessageEvent) {
 	data.MsgType = ws_data.GMC_TEMP_MESSAGE
 	data.Message = msg
 	marshal, _ := json.Marshal(data)
-	err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-	if err != nil {
-		log.Info("handleTempMessage出错:", err)
-	}
+	//err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+	//if err != nil {
+	//log.Info("handleTempMessage出错:", err)
+	//}
+	bot.WsCon.Write(marshal)
 }
 
 //有人入群
 func handleMemberJoinGroup(cli *client.QQClient, event *client.MemberJoinGroupEvent) {
-	bot.WSWLock.Lock()
+	//bot.WSWLock.Lock()
 	defer func() {
 		e := recover()
 		if e != nil {
 			ws_data.PrintStackTrace(e)
 		}
-		bot.WSWLock.Unlock()
+		//bot.WSWLock.Unlock()
 	}()
 	log.Info("收到入群信息")
 	if bot.WsCon == nil {
@@ -274,21 +276,22 @@ func handleMemberJoinGroup(cli *client.QQClient, event *client.MemberJoinGroupEv
 	data.BotId = cli.Uin
 	data.MsgType = ws_data.GMC_MEMBER_ADD
 	marshal, _ := json.Marshal(data)
-	err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-	if err != nil {
-		log.Info("handleMemberJoinGroup出错", err)
-	}
+	//err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+	//if err != nil {
+	//log.Info("handleMemberJoinGroup出错", err)
+	//}
+	bot.WsCon.Write(marshal)
 }
 
 //有人离开
 func handleMemberLeaveGroup(cli *client.QQClient, event *client.MemberLeaveGroupEvent) {
-	bot.WSWLock.Lock()
+	//bot.WSWLock.Lock()
 	defer func() {
 		e := recover()
 		if e != nil {
 			ws_data.PrintStackTrace(e)
 		}
-		bot.WSWLock.Unlock()
+		//bot.WSWLock.Unlock()
 	}()
 	log.Info("收到有人退群")
 	if bot.WsCon == nil {
@@ -300,10 +303,11 @@ func handleMemberLeaveGroup(cli *client.QQClient, event *client.MemberLeaveGroup
 	data.BotId = cli.Uin
 	data.MsgType = ws_data.GMC_MEMBER_LEAVE
 	marshal, _ := json.Marshal(data)
-	err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-	if err != nil {
-		log.Info("handleMemberLeaveGroup出错", err)
-	}
+	//err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+	//if err != nil {
+	//	log.Info("handleMemberLeaveGroup出错", err)
+	//}
+	bot.WsCon.Write(marshal)
 }
 
 //有人申请入群
@@ -327,12 +331,13 @@ func handleUserJoinGroupRequest(cli *client.QQClient, event *client.UserJoinGrou
 	data.RequestId = event.RequestId
 	data.Message = event.Message
 	marshal, _ := json.Marshal(data)
-	bot.WSWLock.Lock()
-	err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-	if err != nil {
-		log.Info("handleUserJoinGroupRequest出错", err)
-	}
-	bot.WSWLock.Unlock()
+	//bot.WSWLock.Lock()
+	bot.WsCon.Write(marshal)
+	//err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+	//if err != nil {
+	//	log.Info("handleUserJoinGroupRequest出错", err)
+	//}
+	//bot.WSWLock.Unlock()
 	ch := make(chan ws_data.GMCWSData, 1)
 	ws_data.ChanMapLock.Lock()
 	ws_data.ChanMap[event.RequestId] = ch
@@ -373,12 +378,13 @@ func handleGroupInvitedRequest(cli *client.QQClient, event *client.GroupInvitedR
 	data.InvitorId = event.InvitorUin
 	data.RequestId = event.RequestId
 	marshal, _ := json.Marshal(data)
-	bot.WSWLock.Lock()
-	err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
-	if err != nil {
-		log.Info("handleGroupInvitedRequest出错", err)
-	}
-	bot.WSWLock.Unlock()
+	//bot.WSWLock.Lock()
+	bot.WsCon.Write(marshal)
+	//err := bot.WsCon.WriteMessage(websocket.TextMessage, marshal)
+	//if err != nil {
+	//	log.Info("handleGroupInvitedRequest出错", err)
+	//}
+	//bot.WSWLock.Unlock()
 	ch := make(chan ws_data.GMCWSData, 1)
 	ws_data.ChanMapLock.Lock()
 	ws_data.ChanMap[event.RequestId] = ch

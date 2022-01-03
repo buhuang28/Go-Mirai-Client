@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
-	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -22,9 +21,9 @@ func HandleGetAllMember(cli *client.QQClient) {
 		log.Info(cli.Uin, "获取全部群成员列表失败:", err)
 	} else {
 		//增加Websocket写入互斥锁
-		WSWLock.Lock()
-		defer WSWLock.Unlock()
-		WsCon.WriteMessage(websocket.TextMessage, marshal)
+		//WSWLock.Lock()
+		//defer WSWLock.Unlock()
+		WsCon.Write(marshal)
 	}
 }
 
@@ -42,8 +41,9 @@ func HandleGroupList(cli *client.QQClient) {
 		log.Info("%d获取群列表失败", cli.Uin)
 	} else {
 		//增加Websocket写入互斥锁
-		WSWLock.Lock()
-		defer WSWLock.Unlock()
-		WsCon.WriteMessage(websocket.TextMessage, marshal)
+		//WSWLock.Lock()
+		//defer WSWLock.Unlock()
+		WsCon.Write(marshal)
+		//WsCon.WriteMessage(websocket.TextMessage, marshal)
 	}
 }

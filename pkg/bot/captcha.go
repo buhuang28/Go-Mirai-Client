@@ -37,10 +37,10 @@ func ProcessLoginRsp(cli *client.QQClient, rsp *client.LoginResponse) (bool, err
 			rsp.Error = client.UnsafeDeviceError
 		}
 	}
-	log.Infof("验证码处理页面: http://localhost:%s/", config.Port)
+	//log.Infof("验证码处理页面: http://localhost:%s/", config.Port)
 	switch rsp.Error {
 	case client.SliderNeededError:
-		log.Infof("遇到滑块验证码，根据README提示操作 https://github.com/protobufbot/Go-Mirai-Client (顺便star)")
+		//log.Infof("遇到滑块验证码，根据README提示操作 https://github.com/protobufbot/Go-Mirai-Client (顺便star)")
 		prom := promise.NewPromise()
 		WaitingCaptchas.Store(cli.Uin, &WaitingCaptcha{
 			Captcha: &dto.Bot_Captcha{
@@ -62,7 +62,7 @@ func ProcessLoginRsp(cli *client.QQClient, rsp *client.LoginResponse) (bool, err
 		}
 		return ProcessLoginRsp(cli, rsp)
 	case client.NeedCaptcha:
-		log.Infof("遇到图形验证码，根据README提示操作 https://github.com/protobufbot/Go-Mirai-Client (顺便star)")
+		//log.Infof("遇到图形验证码，根据README提示操作 https://github.com/protobufbot/Go-Mirai-Client (顺便star)")
 		_ = ioutil.WriteFile("captcha.jpg", rsp.CaptchaImage, 0644)
 		prom := promise.NewPromise()
 		WaitingCaptchas.Store(cli.Uin, &WaitingCaptcha{

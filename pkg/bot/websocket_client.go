@@ -5,21 +5,21 @@ import (
 	"fmt"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
-	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
-	"net/http"
+	//"github.com/gorilla/websocket"
+	"golang.org/x/net/websocket"
 	"sync"
 	"time"
 )
 
 var (
-	WsCon          *websocket.Conn
-	WsConSucess    bool = false
-	WSWLock        sync.Mutex
-	WSRLock        sync.Mutex
-	WSCallLock     sync.Mutex
-	WSClientHeader http.Header = make(map[string][]string)
-	BotLock        sync.Mutex
+	WsCon       *websocket.Conn
+	WsConSucess bool = false
+	//WSWLock        sync.Mutex
+	//WSRLock        sync.Mutex
+	WSCallLock sync.Mutex
+	//WSClientHeader http.Header = make(map[string][]string)
+	BotLock sync.Mutex
 )
 
 const (
@@ -40,16 +40,17 @@ func WSDailCall() {
 		WSCallLock.Unlock()
 	}()
 	WSCallLock.Lock()
-	var tempHeader http.Header = make(map[string][]string)
-	tempHeader.Add("origin", WSClientOrigin)
-	WSClientHeader = tempHeader
+	//var tempHeader http.Header = make(map[string][]string)
+	//tempHeader.Add("origin", WSClientOrigin)
+	//WSClientHeader = tempHeader
 	var err error
 	for {
 		if WsCon != nil && WsConSucess {
 			return
 		}
 		fmt.Println("开始连接")
-		WsCon, _, err = websocket.DefaultDialer.Dial(WSServerAddr, WSClientHeader)
+		//WsCon, _, err = websocket.DefaultDialer.Dial(WSServerAddr, WSClientHeader)
+		WsCon, err = websocket.Dial(WSServerAddr, "", WSClientOrigin)
 		if err != nil || WsCon == nil {
 			log.Infof("ws连接出错:", err)
 			time.Sleep(time.Second * 2)
@@ -85,9 +86,13 @@ func HandleWSMsg() {
 			time.Sleep(time.Second)
 			continue
 		}
-		WSRLock.Lock()
-		_, message, e := WsCon.ReadMessage()
-		WSRLock.Unlock()
+		//WSRLock.Lock()
+		//_, message, e := WsCon.ReadMessage()
+		//_, message, e := WsCon.Read()
+		//WSRLock.Unlock()
+		request := make([]byte, 2048)
+
+		readLen, e := WsCon.Read(request)
 		if e != nil || WsCon == nil {
 			log.Println("出错了：", e)
 			time.Sleep(time.Second * 2)
@@ -100,7 +105,7 @@ func HandleWSMsg() {
 		}
 		go func() {
 			var data ws_data.GMCWSData
-			_ = json.Unmarshal(message, &data)
+			_ = json.Unmarshal(request[:readLen], &data)
 			BotLock.Lock()
 			cli, ok := Clients.Load(data.BotId)
 			BotLock.Unlock()

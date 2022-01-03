@@ -6,7 +6,6 @@ import (
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
-	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 	"sync"
 	"time"
@@ -31,7 +30,7 @@ func BuHuangSendGroupMsg(cli *client.QQClient, miraiMsg []message.IMessageElemen
 	sendingMessage := &message.SendingMessage{Elements: miraiMsg}
 	preProcessGroupSendingMessage(cli, groupId, sendingMessage)
 	if len(sendingMessage.Elements) == 0 {
-		log.Warnf("发送消息内容为空")
+		//log.Warnf("发送消息内容为空")
 		return -1
 	}
 	var record MessageRecord
@@ -121,16 +120,17 @@ func BuhuangBotOnline(botId int64) {
 		var data ws_data.GMCWSData
 		data.BotId = botId
 		data.MsgType = ws_data.GMC_ONLINE
-		WSWLock.Lock()
+		//WSWLock.Lock()
 		defer func() {
 			e := recover()
 			if e != nil {
 				ws_data.PrintStackTrace(e)
 			}
-			WSWLock.Unlock()
+			//WSWLock.Unlock()
 		}()
 		marshal, _ := json.Marshal(data)
-		WsCon.WriteMessage(websocket.TextMessage, marshal)
+		//WsCon.WriteMessage(websocket.TextMessage, marshal)
+		WsCon.Write(marshal)
 	}
 }
 
@@ -147,7 +147,8 @@ func BuhuangBotOffline(botId int64) {
 		data.BotId = botId
 		data.MsgType = ws_data.GMC_OFFLINE
 		marshal, _ := json.Marshal(data)
-		WsCon.WriteMessage(websocket.TextMessage, marshal)
+		//WsCon.WriteMessage(websocket.TextMessage, marshal)
+		WsCon.Write(marshal)
 	}
 }
 

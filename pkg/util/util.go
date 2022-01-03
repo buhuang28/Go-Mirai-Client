@@ -15,7 +15,6 @@ import (
 	"net/url"
 	"os"
 	"runtime"
-	"runtime/debug"
 	"strconv"
 	"strings"
 	"sync"
@@ -81,7 +80,7 @@ func DelFile(path string) bool {
 	err := os.Remove(path)
 	if err != nil {
 		// 删除失败
-		log.Error(err)
+		//log.Error(err)
 		return false
 	} else {
 		// 删除成功
@@ -115,8 +114,8 @@ func SafeGo(fn func()) {
 		defer func() {
 			e := recover()
 			if e != nil {
-				log.Errorf("err recovered: %+v", e)
-				log.Errorf("%s", debug.Stack())
+				//log.Errorf("err recovered: %+v", e)
+				//log.Errorf("%s", debug.Stack())
 			}
 		}()
 		fn()

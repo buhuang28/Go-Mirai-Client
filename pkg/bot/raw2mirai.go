@@ -8,7 +8,6 @@ import (
 
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
-	log "github.com/sirupsen/logrus"
 )
 
 type Node struct {
@@ -83,7 +82,7 @@ func RawMsgToMiraiMsg(cli *client.QQClient, str string) []message.IMessageElemen
 			case "gift":
 				//elemList = append(elemList, ProtoGiftToMiraiGift(cli, attrMap))
 			default:
-				log.Warnf("不支持的类型 %s", code)
+				//log.Warnf("不支持的类型 %s", code)
 				elemList = append(elemList, message.NewText(code))
 			}
 		}

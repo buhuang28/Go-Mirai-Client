@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/config"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/gmc"
-	"github.com/ProtobufBot/Go-Mirai-Client/pkg/util"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
 	log "github.com/sirupsen/logrus"
 	"github.com/zserge/lorca"
@@ -32,7 +31,7 @@ func main() {
 	//exec.Command(`cmd`, `/c`, `start`, "http://127.0.0.1:9000").Start()
 	ui, err := lorca.New(fmt.Sprintf("http://localhost:%s", config.Port), "", 1024, 768)
 	if err != nil {
-		util.FatalError(err)
+		//util.FatalError(err)
 		return
 	}
 	defer func() {

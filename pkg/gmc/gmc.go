@@ -2,7 +2,6 @@ package gmc
 
 import (
 	"flag"
-	"fmt"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/bot"
 	"github.com/ProtobufBot/Go-Mirai-Client/pkg/ws_data"
 	"io/ioutil"
@@ -68,7 +67,8 @@ func InitLog() {
 		rotatelogs.WithMaxAge(time.Hour*24*3),                    // 日志保留3天
 	)
 	if err != nil {
-		util.FatalError(err)
+		//util.FatalError(err)
+		log.Info(err)
 		return
 	}
 	log.AddHook(lfshook.NewHook(
@@ -96,7 +96,7 @@ func Start() {
 	LoadGmcConfigFile(gmcConfigPath)  // 如果文件存在，从文件读取gmc config
 	LoadParamConfig()                 // 如果环境变量存在，从环境变量读取gmc config，并覆盖
 	WriteGmcConfigFile(gmcConfigPath) // 内存中的gmc config写到文件
-	log.Infof("gmc config: %+v", util.MustMarshal(config.Conf))
+	//log.Infof("gmc config: %+v", util.MustMarshal(config.Conf))
 	go func() {
 		bot.WSDailCall()
 	}()
@@ -110,7 +110,7 @@ func Start() {
 func LoadGmcConfigFile(filePath string) {
 	if util.PathExists(filePath) {
 		if err := config.Conf.ReadJson([]byte(util.ReadAllText(filePath))); err != nil {
-			log.Errorf("failed to read gmc config file %s, %+v", filePath, err)
+			//log.Errorf("failed to read gmc config file %s, %+v", filePath, err)
 		}
 	}
 }
@@ -142,14 +142,14 @@ func LoadParamConfig() {
 		if len(authSplit) == 2 {
 			config.HttpAuth[authSplit[0]] = authSplit[1]
 		} else {
-			log.Warnf("auth 参数错误，正确格式: 'username,password'")
+			//log.Warnf("auth 参数错误，正确格式: 'username,password'")
 		}
 	}
 }
 
 func WriteGmcConfigFile(filePath string) {
 	if err := ioutil.WriteFile(filePath, config.Conf.ToJson(), 0644); err != nil {
-		log.Warnf("failed to write gmc config file %s, %+v", filePath, err)
+		//log.Warnf("failed to write gmc config file %s, %+v", filePath, err)
 	}
 }
 
@@ -178,11 +178,12 @@ func InitGin() {
 
 	realPort, err := RunGin(router, ":"+config.Port)
 	if err != nil {
-		util.FatalError(fmt.Errorf("failed to run gin, err: %+v", err))
+		log.Info(err)
+		//util.FatalError(fmt.Errorf("failed to run gin, err: %+v", err))
 	}
 	config.Port = realPort
-	log.Infof("端口号 %s", realPort)
-	log.Infof(fmt.Sprintf("浏览器打开 http://localhost:%s/ 设置机器人", realPort))
+	//log.Infof("端口号 %s", realPort)
+	//log.Infof(fmt.Sprintf("浏览器打开 http://localhost:%s/ 设置机器人", realPort))
 }
 
 func RunGin(engine *gin.Engine, port string) (string, error) {
@@ -199,7 +200,8 @@ func RunGin(engine *gin.Engine, port string) (string, error) {
 	_, randPort, _ := net.SplitHostPort(ln.Addr().String())
 	go func() {
 		if err := http.Serve(ln, engine); err != nil {
-			util.FatalError(fmt.Errorf("failed to serve http, err: %+v", err))
+			log.Info(err)
+			//util.FatalError(fmt.Errorf("failed to serve http, err: %+v", err))
 		}
 	}()
 	return randPort, nil

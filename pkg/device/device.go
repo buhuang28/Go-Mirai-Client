@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"math/rand"
 	"os"
@@ -16,7 +17,6 @@ import (
 
 	"github.com/Mrs4s/MiraiGo/binary"
 	"github.com/Mrs4s/MiraiGo/client"
-	log "github.com/sirupsen/logrus"
 )
 
 func RandDevice(randGen *rand.Rand) *client.DeviceInfo {
@@ -118,21 +118,22 @@ func GetDevice(seed int64, clientProtocol int32) *client.DeviceInfo {
 
 	deviceDir := path.Dir(devicePath)
 	if !util.PathExists(deviceDir) {
-		log.Infof("%+v 目录不存在，自动创建", deviceDir)
+		//log.Infof("%+v 目录不存在，自动创建", deviceDir)
 		if err := os.MkdirAll(deviceDir, 0777); err != nil {
-			log.Warnf("failed to mkdir deviceDir, err: %+v", err)
+			//log.Warnf("failed to mkdir deviceDir, err: %+v", err)
 		}
 	}
 
-	log.Info("生成随机设备信息")
+	//log.Info("生成随机设备信息")
 	deviceInfo := RandDevice(randGen)
 
 	deviceInfo.IpAddress = []byte{192, 168, 1, byte(100 + seed%100)}
 
 	if util.PathExists(devicePath) {
-		log.Infof("使用 %s 内的设备信息覆盖设备信息", devicePath)
+		//log.Infof("使用 %s 内的设备信息覆盖设备信息", devicePath)
 		if err := deviceInfo.ReadJson([]byte(util.ReadAllText(devicePath))); err != nil {
-			util.FatalError(fmt.Errorf("failed to load device info, err: %+v", err))
+			log.Info(err)
+			//util.FatalError(fmt.Errorf("failed to load device info, err: %+v", err))
 		}
 	}
 
@@ -143,10 +144,10 @@ func GetDevice(seed int64, clientProtocol int32) *client.DeviceInfo {
 	GenNewGuid(deviceInfo)
 	GenNewTgtgtKey(randGen, deviceInfo)
 
-	log.Infof("保存设备信息到文件 %s", devicePath)
+	//log.Infof("保存设备信息到文件 %s", devicePath)
 	err := ioutil.WriteFile(devicePath, deviceInfo.ToJson(), 0644)
 	if err != nil {
-		log.Warnf("写设备信息文件 %s 失败", devicePath)
+		//log.Warnf("写设备信息文件 %s 失败", devicePath)
 	}
 	return deviceInfo
 }
